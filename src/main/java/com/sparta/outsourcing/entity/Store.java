@@ -25,7 +25,7 @@ public class Store extends BaseEntity {
     private LocalTime closeTime;
 
     @Column(nullable = false, name = "min_order_price")
-    private Integer minPrice;
+    private Integer minOrderPrice;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
