@@ -5,12 +5,9 @@ import com.sparta.outsourcing.common.Status;
 import jakarta.persistence.*;
 import lombok.Getter;
 
-import java.awt.*;
-import java.time.LocalDateTime;
-
 @Entity
 @Getter
-@Table(name="order")
+@Table(name="`order`")
 public class Order extends BaseEntity {
 
     @Id
