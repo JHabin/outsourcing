@@ -1,5 +1,6 @@
 package com.sparta.outsourcing.entity;
 
+import com.sparta.outsourcing.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 
