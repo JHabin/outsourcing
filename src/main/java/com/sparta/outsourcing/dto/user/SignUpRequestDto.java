@@ -12,7 +12,7 @@ public class SignUpRequestDto {
     private final String email;
 
     @NotBlank(message = "비밀번호는 필수값입니다.")
-    @Size(min = 8)
+    @Min(value = 8)
     @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*#?&])[A-Za-z\\d@$!%*#?&]{8,}$", message = "비밀번호는 최소 8글자, 영어, 숫자, 특수문자가 최소 1개씩 필요합니다.")
     private final String password;
 
