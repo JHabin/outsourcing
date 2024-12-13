@@ -8,7 +8,7 @@ import java.time.LocalTime;
 
 @Getter
 @Entity
-@Table(name = "store")
+@Table(name = "`store`")
 public class Store extends BaseEntity {
 
     @Id

@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor
-@Table(name = "user")
+@Table(name = "`user`")
 public class User extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,7 +21,7 @@ public class User extends BaseEntity {
     @Column(nullable = false, unique = true, length = 100)
     private String email;
 
-    @Convert(converter = PasswordEncoder.class)
+    //@Convert(converter = PasswordEncoder.class)
     @Column(nullable = false, length = 100)
     private String password;
 
