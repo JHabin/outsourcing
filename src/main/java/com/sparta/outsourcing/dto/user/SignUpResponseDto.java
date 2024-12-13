@@ -8,6 +8,7 @@ import lombok.Getter;
 
 @Getter
 public class SignUpResponseDto {
+    private final Long id;
 
     private final String email;
 
@@ -21,7 +22,8 @@ public class SignUpResponseDto {
 
     private final LocalDateTime createdAt;
 
-    public SignUpResponseDto(String email, String nickname, String address, String phone, Role role, LocalDateTime createdAt) {
+    public SignUpResponseDto(Long id, String email, String nickname, String address, String phone, Role role, LocalDateTime createdAt) {
+        this.id = id;
         this.email = email;
         this.nickname = nickname;
         this.address = address;
