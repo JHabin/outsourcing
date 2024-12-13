@@ -3,6 +3,8 @@ package com.sparta.outsourcing.entity;
 import com.sparta.outsourcing.common.BaseEntity;
 import com.sparta.outsourcing.common.Role;
 import jakarta.persistence.*;
+import com.sparta.outsourcing.config.PasswordEncoder;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -19,6 +21,7 @@ public class User extends BaseEntity {
     @Column(nullable = false, unique = true, length = 100)
     private String email;
 
+//    @Convert(converter = PasswordEncoder.class)
     @Column(nullable = false, length = 100)
     private String password;
 
