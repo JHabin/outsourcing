@@ -1,3 +1,4 @@
+/*
 package com.sparta.outsourcing.dto.order;
 
 import com.sparta.outsourcing.common.Status;
@@ -30,6 +31,7 @@ public class RejectOrderResponseDto {
     }
 
     public static RejectOrderResponseDto toDto(Order order) {
+
         return new RejectOrderResponseDto(
                 order.getUser().getId(),
                 order.getMenu().getId(),
@@ -42,3 +44,4 @@ public class RejectOrderResponseDto {
         );
     }
 }
+*/

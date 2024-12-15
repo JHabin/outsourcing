@@ -3,15 +3,12 @@ package com.sparta.outsourcing.entity;
 import com.sparta.outsourcing.common.BaseEntity;
 import com.sparta.outsourcing.common.Role;
 import jakarta.persistence.*;
-import com.sparta.outsourcing.config.PasswordEncoder;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 
 @Entity
 @Getter
-@NoArgsConstructor
 @Table(name = "`user`")
 public class User extends BaseEntity {
     @Id
