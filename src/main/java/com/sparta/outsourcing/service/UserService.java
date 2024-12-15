@@ -40,7 +40,20 @@ public class UserService {
 
     }
 
+    public User login(String email, String password) {
+        User findUser = userRepository.findByUserOrElseThrow(email);
 
+        // 탈퇴한 회원 로그인 예외처리
+        if (Role.NOT_USE.equals(findUser.getRole())) {
+            throw new DeactivatedException(ErrorCode.DEACTIVATED_USER);
+        }
+
+        if (!passwordEncoder.matches(password, findUser.getPassword())) {
+            throw new PasswordIncorrectException(ErrorCode.PASSWORD_INCORRECT);
+        }
+
+        return findUser;
+    }
 
 
 }

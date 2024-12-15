@@ -33,4 +33,14 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     }
 
+    @PostMapping("/login")
+    public ResponseEntity<String> login(@Valid @RequestBody LoginRequestDto loginRequestDto, HttpServletRequest request) {   //
+        User user = userService.login(loginRequestDto.getEmail(), loginRequestDto.getPassword());
+
+        HttpSession session = request.getSession();
+        if (session.getAttribute("id") != null) {
+            throw new AlreadyLoggedInException(ErrorCode.ALEADY_LOGGED_IN);
+        }
+        return ResponseEntity.status(HttpStatus.OK).body("로그인 성공");
+    }
 }
