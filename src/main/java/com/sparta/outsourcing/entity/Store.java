@@ -31,4 +31,13 @@ public class Store extends BaseEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    public Store(String name, LocalTime openTime, LocalTime closeTime, Integer minOrderPrice) {
+        this.name = name;
+        this.openTime = openTime;
+        this.closeTime = closeTime;
+        this.minOrderPrice = minOrderPrice;
+    }
+
+    public Store() {
+    }
 }
