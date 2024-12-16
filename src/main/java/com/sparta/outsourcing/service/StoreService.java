@@ -68,4 +68,10 @@ public class StoreService {
     public List<StoreResponseDto> findStore(String storeName) {
         return storeRepository.findAllByStoreName(storeName);
     }
+
+    // TODO 권한 확인 로직 추가
+    public void deleteStore(Long storeId) {
+        Store findStore = storeRepository.findByIdOrElseThrow(storeId);
+        storeRepository.delete(findStore);
+    }
 }

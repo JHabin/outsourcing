@@ -54,4 +54,11 @@ public class StoreController {
         List<StoreResponseDto> storeResponseDtoList = storeService.findStore(storeName);
         return new ResponseEntity<>(storeResponseDtoList, HttpStatus.OK);
     }
+
+    // 가게 삭제
+    @DeleteMapping("/{storeId}")
+    public ResponseEntity<Void> deleteStore(@PathVariable Long storeId) {
+        storeService.deleteStore(storeId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }
