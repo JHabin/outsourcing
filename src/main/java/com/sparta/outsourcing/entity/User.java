@@ -18,7 +18,6 @@ public class User extends BaseEntity {
     @Column(nullable = false, unique = true, length = 100)
     private String email;
 
-//    @Convert(converter = PasswordEncoder.class)
     @Column(nullable = false, length = 100)
     private String password;
 
@@ -35,12 +34,19 @@ public class User extends BaseEntity {
     @Enumerated(value = EnumType.STRING)
     private Role role;
 
+    public User() {
+    }
+
     public User(String email, String password, String nickname, String address, String phone, Role role) {
         this.email = email;
         this.password = password;
         this.nickname = nickname;
         this.address = address;
         this.phone = phone;
+        this.role = role;
+    }
+
+    public void disableUser(Role role) {
         this.role = role;
     }
 }

@@ -13,6 +13,8 @@ import lombok.RequiredArgsConstructor;
 public class SignUpResponseDto {
     private final String email;
 
+    private final String password;
+
     private final String nickname;
 
     private final String address;
@@ -26,6 +28,7 @@ public class SignUpResponseDto {
     public static SignUpResponseDto toDto(User user) {
         return new SignUpResponseDto(
                 user.getEmail(),
+                user.getPassword(),
                 user.getNickname(),
                 user.getAddress(),
                 user.getPhone(),
