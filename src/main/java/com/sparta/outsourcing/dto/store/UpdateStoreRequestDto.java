@@ -9,7 +9,7 @@ import lombok.Getter;
 import java.time.LocalTime;
 
 @Getter
-public class UpdateStoreReguestDto {
+public class UpdateStoreRequestDto {
 
     @NotBlank(message = "가게명은 필수 입력 항목입니다.")
     private final String name;
@@ -26,10 +26,11 @@ public class UpdateStoreReguestDto {
     @NotNull(message = "최소 주문 금액은 필수 입력 항목입니다.")
     private final Integer minOrderPrice;
 
-    public UpdateStoreReguestDto(String name, LocalTime openTime, LocalTime closeTime, Integer minOrderPrice) {
+    public UpdateStoreRequestDto(String name, LocalTime openTime, LocalTime closeTime, Integer minOrderPrice) {
         this.name = name;
         this.openTime = openTime;
         this.closeTime = closeTime;
         this.minOrderPrice = minOrderPrice;
     }
+
 }

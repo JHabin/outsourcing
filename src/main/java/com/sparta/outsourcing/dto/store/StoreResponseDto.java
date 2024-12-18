@@ -20,4 +20,5 @@ public class StoreResponseDto {
         this.closeTime = closeTime;
         this.minOrderPrice = minOrderPrice;
     }
+
 }

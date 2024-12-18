@@ -21,4 +21,12 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
     @Query("SELECT new com.sparta.outsourcing.dto.store.StoreResponseDto(s.id, s.name, s.openTime, s.closeTime, s.minOrderPrice) " +
             "FROM Store s WHERE s.name LIKE %:storeName%")
     List<StoreResponseDto> findAllByStoreName(@Param("storeName") String storeName);
+
+    // 쿼리를 사용해 dto로 변환하는 방식
+//    @Query("SELECT new com.sparta.outsourcing.dto.store.StoreResponseDto(s.id, s.name, s.openTime, s.closeTime, s.minOrderPrice) " +
+//            "FROM Store s")
+//    List<StoreResponseDto> findAllStores();
+
+    List<Store> findAll();
+
 }
