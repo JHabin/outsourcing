@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
-@NoArgsConstructor
 @Table(name = "`user`")
 public class User extends BaseEntity {
     @Id
@@ -35,6 +34,9 @@ public class User extends BaseEntity {
     @Enumerated(value = EnumType.STRING)
     private Role role;
 
+    public User() {
+    }
+
     public User(String email, String password, String nickname, String address, String phone, Role role) {
         this.email = email;
         this.password = password;
@@ -43,4 +45,5 @@ public class User extends BaseEntity {
         this.phone = phone;
         this.role = role;
     }
+
 }

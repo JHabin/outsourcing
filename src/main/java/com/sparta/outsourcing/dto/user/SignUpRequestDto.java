@@ -12,8 +12,8 @@ public class SignUpRequestDto {
     private final String email;
 
     @NotBlank(message = "비밀번호는 필수값입니다.")
-    @Size(min = 8)
-    @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*#?&])[A-Za-z\\d@$!%*#?&]{8,}$", message = "비밀번호는 최소 8글자, 영어, 숫자, 특수문자가 최소 1개씩 필요합니다.")
+    @Size(min = 8, message = "비밀번호는 최소 8글자이어야 합니다.")
+    @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*#?&])[A-Za-z\\d@$!%*#?&]{8,}$", message = "비밀번호는 영어, 숫자, 특수문자가 최소 1개씩 필요합니다.")
     private final String password;
 
     @NotBlank(message = "닉네임은 필수값입니다.")
@@ -29,9 +29,9 @@ public class SignUpRequestDto {
     private final String phone;
 
     @NotNull(message = "권한은 필수값입니다.")
-    private final Role role;
+    private final String role;
 
-    public SignUpRequestDto(String email, String password, String nickname, String address, String phone, Role role) {
+    public SignUpRequestDto(String email, String password, String nickname, String address, String phone, String role) {
         this.email = email;
         this.password = password;
         this.nickname = nickname;
