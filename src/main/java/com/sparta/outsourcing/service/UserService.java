@@ -81,16 +81,21 @@ public class UserService {
 
     }
 
-    // 비활성화할 사용자의 id 와 비밀번호를 가지고 비활성화
-    public void deleteUserById(Long id, String password) {
-        // id로 사용자를 찾는다. 못 찾으면 예외 처리 / 통일성 부여
-        User user = userRepository.findByIdOrElseThrow(id);
+    // 비활성화할 사용자의 email 와 비밀번호를 가지고 비활성화
+    public void deleteUserByEmail(String email, String password) {
+        // email로 사용자를 찾는다. 못 찾으면 예외 처리
+        User findUser = userRepository.findByEmailOrElseThrow(email);
+
+        // 조회된 회원의 비밀번호와 입력한 비밀번호 두 object를 비교해서 일치하지 않는 경우 예외 처리, 굳이 else if 안 써도 됨.
+        if (!passwordEncoder.matches(password, findUser.getPassword())) {
+            throw new UserException(ErrorCode.PASSWORD_INCORRECT);
+        }
 
         // 삭제일시를 저장하는 부분 구현, soft delete
-        user.softDelete();
+        findUser.softDelete();
 
         // 변경 내용(soft delete 내용) 저장
-        userRepository.save(user);
+        userRepository.save(findUser);
     }
 
 }
