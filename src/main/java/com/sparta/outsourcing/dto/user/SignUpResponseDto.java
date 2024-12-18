@@ -25,19 +25,14 @@ public class SignUpResponseDto {
 
     private final LocalDateTime createdAt;
 
-    public static SignUpResponseDto toDto(User user) {
-        return new SignUpResponseDto(
-                user.getEmail(),
-                user.getPassword(),
-                user.getNickname(),
-                user.getAddress(),
-                user.getPhone(),
-                user.getRole(),
-                user.getCreatedAt()
-        );
-
-
+    public SignUpResponseDto(User user) {
+        this.email = user.getEmail();
+        this.password = user.getPassword();
+        this.nickname = user.getNickname();
+        this.address = user.getAddress();
+        this.phone = user.getPhone();
+        this.role = user.getRole();
+        this.createdAt = user.getCreatedAt();
     }
-
 
 }

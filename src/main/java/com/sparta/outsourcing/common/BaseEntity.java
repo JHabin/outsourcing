@@ -23,4 +23,15 @@ public abstract class BaseEntity {
     private LocalDateTime modifiedAt;
 
     private LocalDateTime deletedAt;
+
+
+    // 회원 탈퇴
+    public void softDelete() {
+        this.deletedAt = LocalDateTime.now();
+    }
+
+    // 탈퇴여부 확인
+    public boolean isDeleted() {
+        return null != deletedAt;
+    }
 }

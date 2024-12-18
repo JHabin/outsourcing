@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class DuplicatedEmailException extends RuntimeException {
+public class UserException extends RuntimeException {
 
     private final ErrorCode errorCode;
 
