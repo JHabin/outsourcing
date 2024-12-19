@@ -10,7 +10,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public class SignUpResponseDto {
+public class UserResponseDto {
     private final String email;
 
     private final String password;
@@ -25,7 +25,7 @@ public class SignUpResponseDto {
 
     private final LocalDateTime createdAt;
 
-    public SignUpResponseDto(User user) {
+    public UserResponseDto(User user) {
         this.email = user.getEmail();
         this.password = user.getPassword();
         this.nickname = user.getNickname();

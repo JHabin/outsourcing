@@ -29,4 +29,9 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
 
     List<Store> findAll();
 
+    @Query("select s from Store s where s.user.id = :ownerId")
+    List<Store> findAllById(@Param("ownerId") Long ownerId);
+
+    @Query("SELECT COUNT(s) FROM Store s WHERE s.user.id = :ownerId")
+    long countStoresById(@Param("ownerId") Long ownerId);
 }

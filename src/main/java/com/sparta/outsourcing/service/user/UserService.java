@@ -1,19 +1,24 @@
-package com.sparta.outsourcing.service;
+package com.sparta.outsourcing.service.user;
 
 import com.sparta.outsourcing.config.PasswordEncoder;
 import com.sparta.outsourcing.dto.user.LoginRequestDto;
+import com.sparta.outsourcing.dto.user.OwnerResponseDto;
+import com.sparta.outsourcing.dto.user.UserResponseDto;
+import com.sparta.outsourcing.entity.Store;
+import com.sparta.outsourcing.repository.StoreRepository;
 import com.sparta.outsourcing.entity.User;
 
 import com.sparta.outsourcing.common.Authentication;
 import com.sparta.outsourcing.common.Role;
 import com.sparta.outsourcing.dto.user.SignUpRequestDto;
-import com.sparta.outsourcing.dto.user.SignUpResponseDto;
 import com.sparta.outsourcing.exception.UserException;
 import com.sparta.outsourcing.exception.ErrorCode;
-import com.sparta.outsourcing.repository.UserRepository;
+import com.sparta.outsourcing.repository.user.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 
 @Service
@@ -22,14 +27,14 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-
+    private final StoreRepository storeRepository;
 
     /**
     * 회원가입 requestDto(이메일,전화번호, 주소, 권한 등)를 받음
     * 저장된 회원 정보를 responseDto에 저장하며 return
      **/
     @Transactional
-    public SignUpResponseDto signUp(SignUpRequestDto signUpRequestDto) {
+    public UserResponseDto signUp(SignUpRequestDto signUpRequestDto) {
 
         //중복된 사용자 아이디로 가입하는 경우 에러 "중복된 아이디입니다." 출력하며 예외 처리
         if (userRepository.existsByEmail(signUpRequestDto.getEmail())) {
@@ -51,13 +56,13 @@ public class UserService {
         User savedUser = userRepository.save(user);
 
         //ResponseDto 형태로 해당 객체 반환
-        return new SignUpResponseDto(savedUser);
+        return new UserResponseDto(savedUser);
     }
     /**
     * 이메일, 비밀번호를 가진 requestDto 로 로그인 메서드 구현
     * 로그인 성공 시 Authentication(이메일, 권한 정보 포함) 객체로 반환
      **/
-    public Authentication login(LoginRequestDto loginRequestDto) {
+    public Authentication login(LoginRequestDto loginRequestDto) throws UserException {
 
         /**
            * if 조건문 보다는 OrElseThrows 쓰기 - 1. Service에서 람다식, 2. Repository에서 default 메서드
@@ -77,9 +82,56 @@ public class UserService {
             throw new UserException(ErrorCode.PASSWORD_INCORRECT);
         }
         // 로그인 성공 시, 해당 회원의 이메일과 권한 정보를 가진 authentication 반환
-        return new Authentication(findUser.getEmail(), findUser.getRole());
+        return new Authentication(
+                findUser.getEmail(),
+                findUser.getRole()
+        );
 
     }
+
+    /**
+     * Owner인지 user인지에 따라 조회 다르게 함.
+     * @param userId
+     * @return
+     */
+    public Object findUserById(Long userId) {
+        // user id 조회
+        User user = userRepository.findByIdOrElseThrow(userId);
+
+        // 조회된 회원이 user일 경우
+        if (Role.USER.equals(user.getRole())) {
+            // UserResponseDto 형태 반환
+            return new UserResponseDto(user);
+        }
+        // 조회된 회원이 owner일 경우
+        if (Role.OWNER.equals(user.getRole())) {
+            // 점주가 가진 가게 수 계산
+            Long storeCount = storeRepository.countStoresById(user.getId());
+            // 점주의 Id와 일치하는 가게를 모두 가져와 가게 리스트에 저장
+            List<Store> storeList = storeRepository.findAllById(user.getId());
+            // 가게 정보 (id, 이름) 리스트 생성
+            List<OwnerResponseDto.StoreDetail> storeDetails = storeList.stream()
+                    .map(store -> new OwnerResponseDto.StoreDetail(
+                            store.getId(),
+                            store.getName()
+                    ))
+                    .toList();
+            // 위의 리스트들을 포함하는 OwnerResponseDto 반환
+            return new OwnerResponseDto(
+                    user.getEmail(),
+                    user.getNickname(),
+                    user.getAddress(),
+                    user.getPhone(),
+                    user.getRole(),
+                    user.getCreatedAt(),
+                    storeCount,
+                    storeDetails
+            );
+        }
+        // default는 user로 반환
+        return new UserResponseDto(user);
+    }
+
 
     // 비활성화할 사용자의 email 와 비밀번호를 가지고 비활성화
     public void deleteUserByEmail(String email, String password) {

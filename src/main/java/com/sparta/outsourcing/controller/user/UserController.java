@@ -1,12 +1,12 @@
-package com.sparta.outsourcing.controller;
+package com.sparta.outsourcing.controller.user;
 
 import com.sparta.outsourcing.common.Authentication;
 import com.sparta.outsourcing.constants.SessionNames;
 import com.sparta.outsourcing.dto.user.DeactivateRequestDto;
 import com.sparta.outsourcing.dto.user.LoginRequestDto;
 import com.sparta.outsourcing.dto.user.SignUpRequestDto;
-import com.sparta.outsourcing.dto.user.SignUpResponseDto;
-import com.sparta.outsourcing.service.UserService;
+import com.sparta.outsourcing.dto.user.UserResponseDto;
+import com.sparta.outsourcing.service.user.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -30,11 +30,16 @@ public class UserController {
      * @return
      */
     @PostMapping("/register")
-    public ResponseEntity<SignUpResponseDto> signUp(@Valid @RequestBody SignUpRequestDto signUpRequestDto) {
+    public ResponseEntity<UserResponseDto> signUp(@Valid @RequestBody SignUpRequestDto signUpRequestDto) {
         //요청 데이터 dto 로부터 파라미터 값을 받아 회원 가입하는 메소드 구현
-        SignUpResponseDto responseDto = userService.signUp(signUpRequestDto);
-        //201 Created 반환하고 SignUpResponseDto 반환
+        UserResponseDto responseDto = userService.signUp(signUpRequestDto);
+        //201 Created 반환하고 UserResponseDto 반환
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> findUser(@PathVariable Long id) {
+        return ResponseEntity.status(HttpStatus.OK).body(userService.findUserById(id));
     }
 
     @PostMapping("/login")
