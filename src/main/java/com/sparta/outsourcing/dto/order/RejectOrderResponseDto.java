@@ -17,9 +17,10 @@ public class RejectOrderResponseDto {
     private final String rejectReason;
     private final LocalDateTime createdAt;
     private final LocalDateTime modifiedAt;
+    private final LocalDateTime deletedAt;
 
 
-    public RejectOrderResponseDto(Long userId, Long menuId, Integer count, Integer totalPrice, Status status, String rejectedReason, LocalDateTime createdAt, LocalDateTime modifiedAt) {
+    public RejectOrderResponseDto(Long userId, Long menuId, Integer count, Integer totalPrice, Status status, String rejectedReason, LocalDateTime createdAt, LocalDateTime modifiedAt, LocalDateTime deletedAt) {
         this.userId = userId;
         this.menuId = menuId;
         this.count = count;
@@ -28,6 +29,7 @@ public class RejectOrderResponseDto {
         this.rejectReason = rejectedReason;
         this.createdAt = createdAt;
         this.modifiedAt = modifiedAt;
+        this.deletedAt = deletedAt;
     }
 
     public static RejectOrderResponseDto toDto(Order order) {
@@ -40,7 +42,8 @@ public class RejectOrderResponseDto {
                 order.getStatus(),
                 order.getRejectedReason(),
                 order.getCreatedAt(),
-                order.getModifiedAt()
+                order.getModifiedAt(),
+                order.getDeletedAt()
         );
     }
 }

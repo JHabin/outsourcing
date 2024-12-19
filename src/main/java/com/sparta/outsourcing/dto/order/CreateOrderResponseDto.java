@@ -17,7 +17,7 @@ public class CreateOrderResponseDto {
     private final LocalDateTime createdAt;
     private final LocalDateTime modifiedAt;
 
-    public CreateOrderResponseDto (Order savedOrder) { //POST:주문 생성
+    public CreateOrderResponseDto(Order savedOrder) { //POST:주문 생성
         this.userId = savedOrder.getUser().getId();
         this.menuId = savedOrder.getMenu().getId();
         this.count = savedOrder.getCount();
@@ -28,4 +28,14 @@ public class CreateOrderResponseDto {
         this.modifiedAt = savedOrder.getModifiedAt();
     }
 
+    public CreateOrderResponseDto(Long userId, Long menuId, Integer count, Integer totalPrice, Status status, String rejectedReason, LocalDateTime createdAt, LocalDateTime modifiedAt) {
+        this.userId = userId;
+        this.menuId = menuId;
+        this.count = count;
+        this.totalPrice = totalPrice;
+        this.status = String.valueOf(status);
+        this.rejectReason = rejectedReason;
+        this.createdAt = createdAt;
+        this.modifiedAt = modifiedAt;
+    }
 }

@@ -34,4 +34,20 @@ public class Order extends BaseEntity {
 
     @Column(nullable = true, name = "rejected_reason", length = 50)
     private String rejectedReason;
+
+    public Order() {
+
+    }
+
+    public Order(User user, Menu menu, Integer count, Integer totalPrice, Status status) {
+        this.user = user;
+        this.menu = menu;
+        this.count = count;
+        this.totalPrice = totalPrice;
+        this.status = status;
+    }
+
+    public void update(String status) {
+        this.status = Status.valueOf(status);
+    }
 }
