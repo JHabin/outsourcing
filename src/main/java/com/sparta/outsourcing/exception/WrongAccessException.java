@@ -4,7 +4,7 @@ import lombok.Getter;
 
 @Getter
 public class WrongAccessException extends OrderException {
-//    public WrongAccessException (final Errorcode errorcode) {
-//        super(errorcode);
-//    }
+    public WrongAccessException (final ErrorCode errorcode) {
+        super(errorcode);
+    }
 }
