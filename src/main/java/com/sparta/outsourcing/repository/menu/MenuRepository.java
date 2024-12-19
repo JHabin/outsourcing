@@ -1,8 +1,11 @@
 package com.sparta.outsourcing.repository.menu;
 
+import com.sparta.outsourcing.dto.store.MenuDto;
 import com.sparta.outsourcing.entity.Menu;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 /*
 * Repository 데이터 엑세스 계층, 데이터베이스와 통신*/
@@ -14,4 +17,6 @@ public interface MenuRepository extends JpaRepository<Menu, Long> {
   default Menu findByIdOrElseThrow(Long id) {
     return findById(id).orElseThrow(() -> new IllegalArgumentException("Menu not found. id=" + id));
   }
+
+  List<Menu> findByStoreId(Long storeId);
 }

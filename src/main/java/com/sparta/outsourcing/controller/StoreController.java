@@ -1,7 +1,11 @@
 package com.sparta.outsourcing.controller;
 
+import com.sparta.outsourcing.common.Authentication;
+import com.sparta.outsourcing.constants.SessionNames;
 import com.sparta.outsourcing.dto.store.*;
 import com.sparta.outsourcing.service.StoreService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -26,10 +30,18 @@ public class StoreController {
     @PostMapping
     // @Valid -> 객체의 제약 조건을 검증하도록 지시하는 어노테이션.
     // @RequestBody -> http 요청으로 받는 json을 request 객체로 바꿔준다.
-    public ResponseEntity<CreateStoreResponseDto> createStore(@Valid @RequestBody CreateStoreRequestDto createStoreRequestDto) {
+    public ResponseEntity<CreateStoreResponseDto> createStore(
+            @Valid @RequestBody CreateStoreRequestDto createStoreRequestDto,
+            HttpServletRequest httpServletRequest
+    ) {
+
+        // 세션에 저장되어있는 Authentication 객체를 가져온다.
+        HttpSession session = httpServletRequest.getSession();
+        Authentication authentication = (Authentication)session.getAttribute(SessionNames.USER_AUTH);
 
         // 새로운 매장을 생성하고 그 결과를 CreateStoreResponseDto 객체에 저장한다.
         CreateStoreResponseDto createStoreResponseDto = storeService.createStore(
+                authentication,
                 createStoreRequestDto.getName(),
                 createStoreRequestDto.getOpenTime(),
                 createStoreRequestDto.getCloseTime(),
@@ -47,8 +59,17 @@ public class StoreController {
      * @return 수정된 가게의 정보를 담고 있는 dto. 성공시 상태코드 200 반환
      */
     @PatchMapping("/{storeId}")
-    public ResponseEntity<UpdateStoreResponseDto> updateStore(@PathVariable Long storeId, @Valid @RequestBody UpdateStoreRequestDto updateStoreRequestDto) {
+    public ResponseEntity<UpdateStoreResponseDto> updateStore(
+            @PathVariable Long storeId,
+            @Valid @RequestBody UpdateStoreRequestDto updateStoreRequestDto,
+            HttpServletRequest httpServletRequest
+    ) {
+
+        HttpSession session = httpServletRequest.getSession();
+        Authentication authentication = (Authentication)session.getAttribute(SessionNames.USER_AUTH);
+
         UpdateStoreResponseDto updatedStore = storeService.updateStore(
+                authentication,
                 storeId,
                 updateStoreRequestDto.getName(),
                 updateStoreRequestDto.getOpenTime(),
@@ -63,11 +84,11 @@ public class StoreController {
      * // @param storeId 조회 하려는 가게의 id
      * @return 특정 가게의 정보를 담고 있는 dto. 성공시 상태코드 200 반환
      */
-//    @GetMapping("/{storeId}")
-//    public ResponseEntity<StoreMenuResponseDto> findStoreById(@PathVariable Long storeId){
-//        StoreMenuResponseDto storeMenuResponseDto = storeService.findStoreById(storeId);
-//        return new ResponseEntity<>(storeMenuResponseDto, HttpStatus.OK);
-//    }
+    @GetMapping("/{storeId}")
+    public ResponseEntity<StoreMenuResponseDto> findStoreById(@PathVariable Long storeId){
+        StoreMenuResponseDto storeMenuResponseDto = storeService.findStoreById(storeId);
+        return new ResponseEntity<>(storeMenuResponseDto, HttpStatus.OK);
+    }
 
     /**
      * 가게 다건 조회 API
@@ -88,8 +109,10 @@ public class StoreController {
      * @return 삭제 성공 시 상태코드 200 반환.
      */
     @DeleteMapping("/{storeId}")
-    public ResponseEntity<Void> deleteStore(@PathVariable Long storeId) {
-        storeService.deleteStore(storeId);
+    public ResponseEntity<Void> deleteStore(@PathVariable Long storeId, HttpServletRequest httpServletRequest) {
+        HttpSession session = httpServletRequest.getSession();
+        Authentication authentication = (Authentication)session.getAttribute(SessionNames.USER_AUTH);
+        storeService.deleteStore(authentication, storeId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

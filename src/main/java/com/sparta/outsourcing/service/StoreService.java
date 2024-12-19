@@ -1,28 +1,39 @@
 package com.sparta.outsourcing.service;
 
+import com.sparta.outsourcing.common.Authentication;
 import com.sparta.outsourcing.dto.store.*;
 import com.sparta.outsourcing.entity.Store;
+import com.sparta.outsourcing.entity.User;
+import com.sparta.outsourcing.exception.UnauthorizedException;
 import com.sparta.outsourcing.repository.StoreRepository;
+import com.sparta.outsourcing.repository.UserRepository;
+import com.sparta.outsourcing.repository.menu.MenuRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class StoreService {
 
     private final StoreRepository storeRepository;
-//    private final MenuRepository menuRepository;
+    private final MenuRepository menuRepository;
+    private final UserRepository userRepository;
 
-    public CreateStoreResponseDto createStore(String name, LocalTime openTime, LocalTime closeTime, Integer minOrderPrice) {
+    public CreateStoreResponseDto createStore(Authentication authentication, String name, LocalTime openTime, LocalTime closeTime, Integer minOrderPrice) {
 
-        Store store = new Store(name, openTime, closeTime, minOrderPrice);
-//        store.setUser(findUser); // findUser -> 어떻게?
-
+        String email = authentication.getEmail();
+        User user = userRepository.findByEmailOrElseThrow(email);
+        Store store = new Store(name, openTime, closeTime, minOrderPrice, user);
         storeRepository.save(store);
 
         return new CreateStoreResponseDto(
@@ -36,11 +47,18 @@ public class StoreService {
         );
     }
 
-    // TODO 수정하려는 가게의 유저 아이디와 로그인된 유저 아이디 일치 확인 로직 추가
     // @Transactional -> 하나의 작업이라도 실패하면 모든 작업을 롤백하여 데이터 일관성을 유지한다.
     @Transactional
-    public UpdateStoreResponseDto updateStore(Long storeId, String name, LocalTime openTime, LocalTime closeTime, Integer minOrderPrice) {
+    public UpdateStoreResponseDto updateStore(Authentication authentication, Long storeId, String name, LocalTime openTime, LocalTime closeTime, Integer minOrderPrice) {
+        String email = authentication.getEmail();
+        User user = userRepository.findByEmailOrElseThrow(email);
         Store findStore = storeRepository.findByIdOrElseThrow(storeId);
+
+        // 로그인된 유저 아이디와 수정하려는 가게의 유저 아이디 일치 확인(본인 가게만 수정)
+        if(!user.getId().equals(findStore.getUser().getId())) {
+            throw new UnauthorizedException(HttpStatus.FORBIDDEN, "본인 가게만 수정이 가능합니다.");
+        }
+
         findStore.updateStore(name, openTime, closeTime, minOrderPrice);
         // 조회된 findStore 객체에서 updateStore 메서드로 데이터를 수정 -> 트랜잭션 종료 시 데이터베이스에 자동으로 커밋
         // JPA의 더티체킹(변경 감지) 매커니즘 덕분에 repository.save()를 따로 호출하지 않아도 변경 사항이 데이터베이스에 자동으로 반영된다.
@@ -55,18 +73,22 @@ public class StoreService {
     }
 
     // 가게 단건 조회 로직
-//    public StoreMenuResponseDto findStoreById(Long storeId) {
-//        Store findStore = storeRepository.findByIdOrElseThrow(storeId);
-//        List<MenuDto> menuDtoList = menuRepository.findMenuById(storeId);
-//        return new StoreMenuResponseDto(
-//                findStore.getId(),
-//                findStore.getName(),
-//                findStore.getOpenTime(),
-//                findStore.getCloseTime(),
-//                findStore.getMinOrderPrice(),
-//                menuDtoList
-//        );
-//    }
+    public StoreMenuResponseDto findStoreById(Long storeId) {
+        Store findStore = storeRepository.findByIdOrElseThrow(storeId);
+        List<MenuDto> menuDtoList = menuRepository.findByStoreId(storeId)
+                .stream()
+                .map(menu -> new MenuDto(menu.getName(), menu.getPrice()))
+                .collect(Collectors.toList());
+
+        return new StoreMenuResponseDto(
+                findStore.getId(),
+                findStore.getName(),
+                findStore.getOpenTime(),
+                findStore.getCloseTime(),
+                findStore.getMinOrderPrice(),
+                menuDtoList
+        );
+    }
 
     public List<StoreResponseDto> findStore(String storeName) {
 
@@ -74,16 +96,12 @@ public class StoreService {
         if (storeName != null && !storeName.isEmpty()) {
             return storeRepository.findAllByStoreName(storeName);
         }
+
         // storeName이 null 또는 빈문자열이면 전체 매장을 조회한다.
-
-//            return storeRepository.findAllStores();
-
-        // TODO findAll 메서드를 통해 조회한 데이터를 dto로 변환
-        //  서비스 레이어에서 반복문 사용해서 수동으로 변환하는 방식? 레파지토리에서 쿼리문을 사용해 변환하는 방식?
-        // 반복문을 사용한 수동 변환 방식
         List<Store> stores = storeRepository.findAll();
         List<StoreResponseDto> storeResponseDtoList = new ArrayList<>();
 
+        // TODO 팀원들과 코드 형식 맞추기
         for (Store store : stores) {
             StoreResponseDto dto = new StoreResponseDto(
                     store.getId(),
@@ -95,13 +113,20 @@ public class StoreService {
             storeResponseDtoList.add(dto);
         }
         return storeResponseDtoList;
-
     }
 
     // TODO 권한 확인 로직 추가
     @Transactional
-    public void deleteStore(Long storeId) {
+    public void deleteStore(Authentication authentication, Long storeId) {
+        String email = authentication.getEmail();
+        User user = userRepository.findByEmailOrElseThrow(email);
         Store findStore = storeRepository.findByIdOrElseThrow(storeId);
+
+        // 삭제하려는 가게의 유저 아이디와 로그인된 유저 아이디가 일치하는 지 확인(본인 가게만 삭제 가능)
+        if(!user.getId().equals(findStore.getUser().getId())) {
+            throw new UnauthorizedException(HttpStatus.FORBIDDEN, "본인 가게만 삭제 가능합니다.");
+        }
+
         storeRepository.delete(findStore);
     }
 }
