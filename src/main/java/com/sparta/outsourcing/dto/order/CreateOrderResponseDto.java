@@ -1,5 +1,6 @@
 package com.sparta.outsourcing.dto.order;
 
+import com.sparta.outsourcing.common.Status;
 import com.sparta.outsourcing.entity.Order;
 
 import lombok.Getter;
