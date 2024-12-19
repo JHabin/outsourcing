@@ -1,4 +1,3 @@
-/*
 package com.sparta.outsourcing.dto.order;
 
 import com.sparta.outsourcing.common.Status;
@@ -47,4 +46,3 @@ public class RejectOrderResponseDto {
         );
     }
 }
-*/
