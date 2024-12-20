@@ -1,7 +1,10 @@
 package com.sparta.outsourcing.dto.menu;
 
+import lombok.Getter;
+
 import java.time.LocalDateTime;
 
+@Getter
 /*
  * 메뉴 수정 응답을 처리하기 위한 Data Transfer Object(DTO) 클래스.
  * 메뉴 수정 요청에 대한 결과를 클라이언트에게 반환하기 위해 사용
