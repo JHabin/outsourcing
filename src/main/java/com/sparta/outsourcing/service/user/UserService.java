@@ -110,10 +110,13 @@ public class UserService {
             // 점주의 Id와 일치하는 가게를 모두 가져와 가게 리스트에 저장
             List<Store> storeList = storeRepository.findAllById(user.getId());
             // 가게 정보 (id, 이름) 리스트 생성
-            List<OwnerResponseDto.StoreDetail> storeDetails = storeList.stream()
-                    .map(store -> new OwnerResponseDto.StoreDetail(
+            List<OwnerResponseDto.StoreInfo> storeDetails = storeList.stream()
+                    .map(store -> new OwnerResponseDto.StoreInfo(
                             store.getId(),
-                            store.getName()
+                            store.getName(),
+                            store.getOpenTime(),
+                            store.getCloseTime(),
+                            store.getMinOrderPrice()
                     ))
                     .toList();
             // 위의 리스트들을 포함하는 OwnerResponseDto 반환

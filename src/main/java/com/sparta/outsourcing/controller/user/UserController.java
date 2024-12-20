@@ -6,6 +6,8 @@ import com.sparta.outsourcing.dto.user.DeactivateRequestDto;
 import com.sparta.outsourcing.dto.user.LoginRequestDto;
 import com.sparta.outsourcing.dto.user.SignUpRequestDto;
 import com.sparta.outsourcing.dto.user.UserResponseDto;
+import com.sparta.outsourcing.exception.ErrorCode;
+import com.sparta.outsourcing.exception.UserException;
 import com.sparta.outsourcing.service.user.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -33,6 +35,7 @@ public class UserController {
     public ResponseEntity<UserResponseDto> signUp(@Valid @RequestBody SignUpRequestDto signUpRequestDto) {
         //요청 데이터 dto 로부터 파라미터 값을 받아 회원 가입하는 메소드 구현
         UserResponseDto responseDto = userService.signUp(signUpRequestDto);
+
         //201 Created 반환하고 UserResponseDto 반환
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     }
@@ -65,6 +68,7 @@ public class UserController {
         if (session != null) {
             session.invalidate(); // 세션 무효화
         }
+
         // 상태 코드 200 ok + "로그아웃 성공" 문자열 반환
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -85,6 +89,9 @@ public class UserController {
         // 세션이 존재한다면, 현재 세션을 무효화함. -> 세션과 관련된 인증 정보 삭제됨
         if (session != null) {
             session.invalidate();
+        }
+        if (session == null) {
+            throw new UserException(ErrorCode.SESSION_INVALID);
         }
         // 상태 코드 200 ok + "회원 삭제 성공" 문자열 반환
         return ResponseEntity

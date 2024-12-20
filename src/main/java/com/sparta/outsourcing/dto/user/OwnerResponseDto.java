@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @Getter
@@ -26,12 +27,15 @@ public class OwnerResponseDto {
 
     private final Long storeNum;
 
-    private final List<StoreDetail> stores;
+    private final List<StoreInfo> stores;
 
     @Getter
     @RequiredArgsConstructor
-    public static class StoreDetail {
+    public static class StoreInfo {
         private final Long storeId;
         private final String storeName;
+        private final LocalTime openTime;
+        private final LocalTime closeTime;
+        private final Integer minOrderPrice;
     }
 }
