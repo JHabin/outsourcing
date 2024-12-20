@@ -91,19 +91,8 @@ public class Review extends BaseEntity {
         this.rate = rate;
         this.content = content;
         this.order = order;
-        this.user = user;
+//        this.user = user;
         this.store = store;
-    }
-
-    /**
-     * 리뷰의 평점과 내용만 초기화하여 새로운 Review 객체를 생성
-     *
-     * @param rate    리뷰의 평점
-     * @param content 리뷰의 내용
-     */
-    public Review(Integer rate, String content) {
-        this.rate = rate;
-        this.content = content;
     }
 
     /*
