@@ -14,11 +14,11 @@ public class Order extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "menu_id", nullable = false)
     private Menu menu;
 
@@ -48,6 +48,11 @@ public class Order extends BaseEntity {
     }
 
     public void update(String status) {
-        this.status = Status.valueOf(status);
+        this.status = Status.of(status);
+    }
+
+    public void reject(String rejectedReason) {
+        this.status = Status.REJECTED;
+        this.rejectedReason = rejectedReason;
     }
 }
