@@ -40,12 +40,13 @@ public class OrderController {
      * request(필수): status
      * 200(정상), 401(권한없음-OWNER만 가능), 404(주문데이터 없음)
      * @param id 주문번호
-     * @param status 주문상태
+     * @param ModifyOrderStatusRequestDto 주문상태
      * @return ModifyOrderStatusResponseDto
      */
     @PatchMapping("/{id}")
-    public ResponseEntity<ModifyOrderStatusResponseDto> updateOrderStatus(@PathVariable Long id, @RequestBody String status) {
-        return ResponseEntity.ok().body(orderService.updateOrderStatus(id, status));
+    public ResponseEntity<ModifyOrderStatusResponseDto> updateOrderStatus(@PathVariable Long id, @RequestBody ModifyOrderStatusRequestDto modifyOrderStatusRequestDto) { //String -> Dto 수정하기!**
+        //@RequestBody + 객채 동작하기 위해서 생성자가 필수
+        return ResponseEntity.ok().body(orderService.updateOrderStatus(id, modifyOrderStatusRequestDto.getStatus()));
     }
 
     /**
@@ -53,12 +54,12 @@ public class OrderController {
      * request(필수): rejectReason
      * 200(정상), 401(권한없음-OWNER만 가능), 404(주문데이터 없음)
      * @param id 주문번호
-     * @param rejectReason 거절사유
+     * @param RejectOrderRequestDto 거절사유
      * @return RejectOrderResponseDto
      */
     @PatchMapping("/{id}/reject")
-    public ResponseEntity<RejectOrderResponseDto> rejectOrderStatus(@PathVariable Long id, @RequestBody String rejectReason) {
-        return ResponseEntity.ok().body(orderService.rejectOrderStatus(id, rejectReason));
+    public ResponseEntity<RejectOrderResponseDto> rejectOrderStatus(@PathVariable Long id, @RequestBody RejectOrderRequestDto rejectOrderRequestDto) {
+        return ResponseEntity.ok().body(orderService.rejectOrderStatus(id, rejectOrderRequestDto.getRejectReason()));
     }
 
     /**
