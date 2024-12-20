@@ -5,7 +5,7 @@ import com.sparta.outsourcing.dto.store.*;
 import com.sparta.outsourcing.entity.Store;
 import com.sparta.outsourcing.entity.User;
 import com.sparta.outsourcing.repository.StoreRepository;
-import com.sparta.outsourcing.repository.UserRepository;
+import com.sparta.outsourcing.repository.user.UserRepository;
 import com.sparta.outsourcing.repository.menu.MenuRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
