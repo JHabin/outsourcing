@@ -30,7 +30,7 @@ public class CreateMenuRequestDto {
    */
   @Min(value = 5000, message = "생성 최소 금액 : 5000")
   @Max(value = 25000, message = "생성 최대 금액 : 25000")
-  private final Long price;
+  private final Integer price;
 
   /**
    * CreateMenuRequestDto 객체를 생성합니다.
@@ -38,7 +38,7 @@ public class CreateMenuRequestDto {
    * @param name  메뉴의 이름
    * @param price 메뉴의 가격 (5000 이상, 25000 이하)
    */
-  public CreateMenuRequestDto(String name, Long price) {
+  public CreateMenuRequestDto(String name, Integer price) {
     this.name = name;
     this.price = price;
   }
