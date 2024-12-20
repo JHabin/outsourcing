@@ -48,6 +48,11 @@ public class Order extends BaseEntity {
     }
 
     public void update(String status) {
-        this.status = Status.valueOf(status);
+        this.status = Status.of(status);
+    }
+
+    public void reject(String rejectedReason) {
+        this.status = Status.REJECTED;
+        this.rejectedReason = rejectedReason;
     }
 }
