@@ -7,6 +7,7 @@ import lombok.Getter;
 
 @Getter
 public class DeactivateRequestDto {
+
     // final - 불변 객체
     @Pattern(regexp = "[a-zA-Z0-9_!#$%&’*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z0-9.-]+$", message = "이메일 형식이 일치하지 않습니다.")
     private final String email;
