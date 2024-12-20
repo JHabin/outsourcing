@@ -9,36 +9,37 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-/**
- * create on 2024. 11. 28. create by IntelliJ IDEA.
- *
- * <p> 로그인 확인을 위한 인터셉터. </p>
- *
- * @author Seokgyu Hwang (Chris)
- * @version 1.0
- * @since 1.0
- */
-@Component
+@Component   // Spring에서 이 클래스를 Bean으로 등록하여 사용할 수 있도록 지정
 public class AuthInterceptor implements HandlerInterceptor {
 
     /**
+     * controller로 가기 전에 호출되는 메서드
      * 로그인이 필요한지 확인합니다.
+     * HttpServletRequest : HTTP 요청 정보
+     * HttpServletResponse : 응답 정보 (HTTP 코드, 메시지 등)
+     * handler : @Controller 또는 @RequestMapping으로 매핑된 메서드 정보 제공
      */
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
             throws UserException {
-        String requestURI = request.getRequestURI(); // 요청 URI 확인
+        // 요청 URI 가져오기
+        String requestURI = request.getRequestURI();
         HttpSession session;
+
+        // login을 수행할 경우 getSession(true)
         if ("/users/login".equals(requestURI)) {
             session = request.getSession(true); // 세션 생성
-            return true;
 
+            return true;
         }
+        // 그 외에는 getSession(false)
         session = request.getSession(false);
 
+        // 세션이 없을 경우 401 에러
         if (session == null) {
             throw new UserException(ErrorCode.SESSION_INVALID);
         }
+        // 세션이 auth(회원) 표시가 없을 경우 401 에러
         if (session.getAttribute(SessionNames.USER_AUTH) == null) {
             throw new UserException(ErrorCode.UNAUTHORIZED);
         }

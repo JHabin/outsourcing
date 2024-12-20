@@ -12,7 +12,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<?> handleUserException(UserException e){
         return ResponseEntity
                 .status(e.getErrorCode().getHttpStatus())  // HTTP 상태 코드
-                .body(e.getMessage());     // 예외 처리된 이유
+                .body(e.getMessage());     // 예외 메시지
     }
 
 }

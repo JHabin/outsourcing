@@ -40,11 +40,13 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     }
 
+    // 회원 중 user 인 사람의 프로필 조회
     @GetMapping("/user/{id}")
     public ResponseEntity<?> findUser(@PathVariable Long id) {
         return ResponseEntity.status(HttpStatus.OK).body(userService.findUserById(id));
     }
 
+    // 회원 중 owner 인 사람의 프로필 조회
     @GetMapping("/owner/{id}")
     public ResponseEntity<?> findOwner(@PathVariable Long id) {
         return ResponseEntity.status(HttpStatus.OK).body(userService.findOwnerById(id));

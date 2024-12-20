@@ -91,10 +91,10 @@ public class UserService {
     }
 
     /**
-     * Owner인지 user인지에 따라 조회 다르게 함.
+     * user가 아닐 경우 interceptro에 의애 예외 처리됨
      *
      * @param userId
-     * @return
+     * @return user responseDto
      */
     public Object findUserById(Long userId) {
         // user id 조회
@@ -104,7 +104,11 @@ public class UserService {
         return new UserResponseDto(user);
 
     }
-
+    /**
+     * owner가 아닐 경우 interceptor에 의해 예외 처리됨
+     * @param ownerId
+     * @return owner responseDto
+     */
     public Object findOwnerById(Long ownerId) {
         // user id 조회
         User owner = userRepository.findByIdOrElseThrow(ownerId);
