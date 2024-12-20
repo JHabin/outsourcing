@@ -1,7 +1,9 @@
 package com.sparta.outsourcing.controller;
 
+import com.sparta.outsourcing.common.Status;
 import com.sparta.outsourcing.dto.order.*;
 import com.sparta.outsourcing.service.OrderService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -26,10 +28,10 @@ public class OrderController {
      *         ResponseDto 응답하면 헤더나 상태코드는 설정할 수 없음
      */
     @PostMapping
-    public ResponseEntity<CreateOrderResponseDto> createOrder(@Valid @RequestBody CreateOrderRequestDto createOrderRequestDto) {
-        CreateOrderResponseDto createOrderResponseDto = orderService.createOrder(createOrderRequestDto);
-        //return new ResponseEntity<>(CreateOrderRequestDto, HttpStatus.CREATED); //컨벤션 맞추기
+    public ResponseEntity<CreateOrderResponseDto> createOrder(@Valid @RequestBody CreateOrderRequestDto createOrderRequestDto, HttpServletRequest httpServletRequest) {
+        CreateOrderResponseDto createOrderResponseDto = orderService.createOrder(createOrderRequestDto, httpServletRequest);
 
+        //return new ResponseEntity<>(CreateOrderRequestDto, HttpStatus.CREATED); //컨벤션 맞추기
         return ResponseEntity.status(HttpStatus.CREATED).body(createOrderResponseDto);
     }
 
@@ -69,15 +71,15 @@ public class OrderController {
         return ResponseEntity.ok().body(orderService.findById(id));
     }
 
-    /**
-     * 주문 (다건) 조회 API (GET)
-     * 유저 기준 주문내역 조회
-     * @param (email) 사용자 고유식별자
-     *        RequestParam: /storeId=?
-     * @return List<OrderResponseDto>
-     */
-    @GetMapping
-    public ResponseEntity<List<OrderResponseDto>> getAllOrder() {
-        return ResponseEntity.ok().body(orderService.findAll());
-    }
+//    /**
+//     * 주문 (다건) 조회 API (GET)
+//     * 유저 기준 주문내역 조회
+//     * @param (email) 사용자 고유식별자
+//     *        RequestParam: /storeId=?
+//     * @return List<OrderResponseDto>
+//     */
+//    @GetMapping
+//    public ResponseEntity<List<OrderResponseDto>> getAllOrder() {
+//        return ResponseEntity.ok().body(orderService.findAll());
+//    }
 }
