@@ -1,9 +1,6 @@
 package com.sparta.outsourcing.controller.menu;
 
-import com.sparta.outsourcing.dto.menu.CreateMenuRequestDto;
-import com.sparta.outsourcing.dto.menu.CreateMenuResponseDto;
-import com.sparta.outsourcing.dto.menu.ModifyMenuRequestDto;
-import com.sparta.outsourcing.dto.menu.ModifyMenuResponseDto;
+import com.sparta.outsourcing.dto.menu.*;
 import com.sparta.outsourcing.service.menu.MenuService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +31,8 @@ public class MenuController {
   /**
    * 메뉴 생성 Controller
    * 메뉴 생성 요청을 처리합니다.
-   * @param storeId 가게의 고유 식별자 (PathVariable로 전달)
+   *
+   * @param storeId    가게의 고유 식별자 (PathVariable로 전달)
    * @param requestDto 메뉴 생성 요청 데이터를 담은 DTO
    * @return 생성된 메뉴 데이터와 HTTP 상태코드 201(CREATED)
    */
@@ -43,19 +41,20 @@ public class MenuController {
       @PathVariable Long storeId,
       @Valid @RequestBody CreateMenuRequestDto requestDto
   ) {
-    CreateMenuResponseDto responseDto = menuService.createMemo(storeId, requestDto.getName(), requestDto.getPrice());
+    CreateMenuResponseDto responseDto = menuService.createMenu(storeId, requestDto.getName(), requestDto.getPrice());
     return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
   }
 
   /**
    * 메뉴 제목 수정 Controller
    * 메뉴 제목 수정 요청을 처리합니다.
-   * @param storeId 가게의 고유 식별자 (PathVariable로 전달)
-   * @param id 메뉴의 고유 식별자 (PathVariable로 전달)
+   *
+   * @param storeId    가게의 고유 식별자 (PathVariable로 전달)
+   * @param id         메뉴의 고유 식별자 (PathVariable로 전달)
    * @param requestDto 메뉴 제목 수정 요청 데이터를 담은 DTO
    * @return 수정된 메뉴 데이터와 HTTP 상태코드 200(OK)
    */
-  @PatchMapping("/id")
+  @PatchMapping("/{id}")
   public ResponseEntity<ModifyMenuResponseDto> updateMenu(
       @PathVariable Long storeId,
       @PathVariable Long id,
@@ -68,15 +67,22 @@ public class MenuController {
   /**
    * 메뉴 삭제 Controller
    * 메뉴 삭제 요청을 처리합니다.
+   *
    * @param storeId 가게의 고유 식별자 (PathVariable로 전달)
-   * @param id 메뉴의 고유 식별자 (PathVariable로 전달)
+   * @param id      메뉴의 고유 식별자 (PathVariable로 전달)
    * @return HTTP 상태코드 204(NO_CONTENT).
    */
-  @DeleteMapping("/id")
+  @DeleteMapping("/{id}")
   public ResponseEntity<Void> deleteMenu(
       @PathVariable Long storeId,
       @PathVariable Long id) {
     menuService.deleteMenu(storeId, id);
     return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+  }
+
+  @GetMapping("/{id}")
+  public ResponseEntity<ResponseDto> getMenu(@PathVariable Long storeId, @PathVariable Long id) {
+    ResponseDto findMenu = menuService.getMenu(storeId, id);
+    return new ResponseEntity<>(findMenu, HttpStatus.OK);
   }
 }
