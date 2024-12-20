@@ -40,9 +40,14 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/user/{id}")
     public ResponseEntity<?> findUser(@PathVariable Long id) {
         return ResponseEntity.status(HttpStatus.OK).body(userService.findUserById(id));
+    }
+
+    @GetMapping("/owner/{id}")
+    public ResponseEntity<?> findOwner(@PathVariable Long id) {
+        return ResponseEntity.status(HttpStatus.OK).body(userService.findOwnerById(id));
     }
 
     @PostMapping("/login")
@@ -79,20 +84,20 @@ public class UserController {
     * 로그아웃이랑 구현은 비슷하지만, deleteUserById로 사용자를 삭제하는 코드가 추가됨.
      */
     @PatchMapping("/deactivate")
-    public ResponseEntity<String> deactivateUser(
-                                                 @RequestBody DeactivateRequestDto deactivateRequestDto,    // 본인 인증에 필요한 이메일, 비밀번호 값 가짐
+    public ResponseEntity<String> deactivateUser(@RequestBody DeactivateRequestDto deactivateRequestDto,    // 본인 인증에 필요한 이메일, 비밀번호 값 가짐
                                                  HttpServletRequest request) {
-        // 해당 id와 그 비밀번호를 가지고 사용자 delete 메서드 수행
-        userService.deleteUserByEmail(deactivateRequestDto.getEmail(), deactivateRequestDto.getPassword());
         // 현재 세션을 가져옴. false - 세션이 존재하지 않을 경우 null을 반환, 세션 없으면 새로 생성 X
         HttpSession session = request.getSession(false);
         // 세션이 존재한다면, 현재 세션을 무효화함. -> 세션과 관련된 인증 정보 삭제됨
         if (session != null) {
+            // 해당 id와 그 비밀번호를 가지고 사용자 delete 메서드 수행
+            userService.deleteUserByEmail(deactivateRequestDto.getEmail(), deactivateRequestDto.getPassword());
             session.invalidate();
         }
         if (session == null) {
             throw new UserException(ErrorCode.SESSION_INVALID);
         }
+
         // 상태 코드 200 ok + "회원 삭제 성공" 문자열 반환
         return ResponseEntity
                 .status(HttpStatus.OK)

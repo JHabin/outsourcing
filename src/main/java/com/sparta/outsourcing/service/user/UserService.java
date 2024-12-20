@@ -30,8 +30,8 @@ public class UserService {
     private final StoreRepository storeRepository;
 
     /**
-    * 회원가입 requestDto(이메일,전화번호, 주소, 권한 등)를 받음
-    * 저장된 회원 정보를 responseDto에 저장하며 return
+     * 회원가입 requestDto(이메일,전화번호, 주소, 권한 등)를 받음
+     * 저장된 회원 정보를 responseDto에 저장하며 return
      **/
     @Transactional
     public UserResponseDto signUp(SignUpRequestDto signUpRequestDto) {
@@ -58,17 +58,18 @@ public class UserService {
         //ResponseDto 형태로 해당 객체 반환
         return new UserResponseDto(savedUser);
     }
+
     /**
-    * 이메일, 비밀번호를 가진 requestDto 로 로그인 메서드 구현
-    * 로그인 성공 시 Authentication(이메일, 권한 정보 포함) 객체로 반환
+     * 이메일, 비밀번호를 가진 requestDto 로 로그인 메서드 구현
+     * 로그인 성공 시 Authentication(이메일, 권한 정보 포함) 객체로 반환
      **/
     public Authentication login(LoginRequestDto loginRequestDto) throws UserException {
 
         /**
-           * if 조건문 보다는 OrElseThrows 쓰기 - 1. Service에서 람다식, 2. Repository에서 default 메서드
-           * OrElseThrows를 했다면 Service
-           * Repository에 했다면 Repository 를 주입받아야 함.
-            -> 메서드 재사용성, 코드 간결화 good
+         * if 조건문 보다는 OrElseThrows 쓰기 - 1. Service에서 람다식, 2. Repository에서 default 메서드
+         * OrElseThrows를 했다면 Service
+         * Repository에 했다면 Repository 를 주입받아야 함.
+         -> 메서드 재사용성, 코드 간결화 good
          **/
         // 이메일 정보로 회원을 조회해서 조회된 사용자 findUser에 저장
         User findUser = userRepository.findByEmailOrElseThrow(loginRequestDto.getEmail());
@@ -91,6 +92,7 @@ public class UserService {
 
     /**
      * Owner인지 user인지에 따라 조회 다르게 함.
+     *
      * @param userId
      * @return
      */
@@ -98,41 +100,41 @@ public class UserService {
         // user id 조회
         User user = userRepository.findByIdOrElseThrow(userId);
 
-        // 조회된 회원이 user일 경우
-        if (Role.USER.equals(user.getRole())) {
-            // UserResponseDto 형태 반환
-            return new UserResponseDto(user);
-        }
-        // 조회된 회원이 owner일 경우
-        if (Role.OWNER.equals(user.getRole())) {
-            // 점주가 가진 가게 수 계산
-            Long storeCount = storeRepository.countStoresById(user.getId());
-            // 점주의 Id와 일치하는 가게를 모두 가져와 가게 리스트에 저장
-            List<Store> storeList = storeRepository.findAllById(user.getId());
-            // 가게 정보 (id, 이름) 리스트 생성
-            List<OwnerResponseDto.StoreInfo> storeDetails = storeList.stream()
-                    .map(store -> new OwnerResponseDto.StoreInfo(
-                            store.getId(),
-                            store.getName(),
-                            store.getOpenTime(),
-                            store.getCloseTime(),
-                            store.getMinOrderPrice()
-                    ))
-                    .toList();
-            // 위의 리스트들을 포함하는 OwnerResponseDto 반환
-            return new OwnerResponseDto(
-                    user.getEmail(),
-                    user.getNickname(),
-                    user.getAddress(),
-                    user.getPhone(),
-                    user.getRole(),
-                    user.getCreatedAt(),
-                    storeCount,
-                    storeDetails
-            );
-        }
-        // default는 user로 반환
+        // UserResponseDto 형태 반환
         return new UserResponseDto(user);
+
+    }
+
+    public Object findOwnerById(Long ownerId) {
+        // user id 조회
+        User owner = userRepository.findByIdOrElseThrow(ownerId);
+
+        // 점주가 가진 가게 수 계산
+        Long storeCount = storeRepository.countStoresById(owner.getId());
+        // 점주의 Id와 일치하는 가게를 모두 가져와 가게 리스트에 저장
+        List<Store> storeList = storeRepository.findAllById(owner.getId());
+        // 가게 정보 (id, 이름) 리스트 생성
+        List<OwnerResponseDto.StoreInfo> storeDetails = storeList.stream()
+                .map(store -> new OwnerResponseDto.StoreInfo(
+                        store.getId(),
+                        store.getName(),
+                        store.getOpenTime(),
+                        store.getCloseTime(),
+                        store.getMinOrderPrice()
+                ))
+                .toList();
+        // 위의 리스트들을 포함하는 OwnerResponseDto 반환
+        return new OwnerResponseDto(
+                owner.getEmail(),
+                owner.getNickname(),
+                owner.getAddress(),
+                owner.getPhone(),
+                owner.getRole(),
+                owner.getCreatedAt(),
+                storeCount,
+                storeDetails
+        );
+
     }
 
 
