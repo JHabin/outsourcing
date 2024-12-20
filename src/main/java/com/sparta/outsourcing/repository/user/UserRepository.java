@@ -1,4 +1,4 @@
-package com.sparta.outsourcing.repository;
+package com.sparta.outsourcing.repository.user;
 
 import com.sparta.outsourcing.entity.User;
 import com.sparta.outsourcing.exception.ErrorCode;
@@ -12,14 +12,14 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Long> {
     boolean existsByEmail(String email);
 
-    default User findByIdOrElseThrow(Long id) {
-        return findById(id).orElseThrow(() -> new UserException(ErrorCode.NOT_FOUND));
-    }
-
     Optional<User> findByEmail(String email);
 
     default User findByEmailOrElseThrow(String email) {
         return findByEmail(email).orElseThrow(() -> new UserException(ErrorCode.NOT_FOUND));
+    }
+
+    default User findByIdOrElseThrow(Long id) {
+        return findById(id).orElseThrow(() -> new UserException(ErrorCode.NOT_FOUND));
     }
 
 }

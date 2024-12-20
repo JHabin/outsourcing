@@ -1,4 +1,3 @@
-
 package com.sparta.outsourcing.interceptor;
 
 import com.sparta.outsourcing.common.Role;
@@ -13,31 +12,31 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 /**
- * HandlerInterceptor : 요청이 컨트롤러로 전달되기 전에 처리하거나, 응답(response)이 사용자에게 전달되기 전에 수행
- * return true :  요청 처리가 계속 진행
- * false : 요청 중단
+ * 세션과 인증 정보를 확인하여 로그인 여부를 판단
+ * HttpServletRequest : HTTP 요청 정보
+ * HttpServletResponse : 응답 정보 (HTTP 코드, 메시지 등)
+ * handler : @Controller 또는 @RequestMapping으로 매핑된 메서드 정보 제공
  */
-
-@Component  // Spring에서 이 클래스를 Bean으로 등록하여 사용할 수 있도록 지정
-public class UserRoleInterceptor implements HandlerInterceptor {
+@Component   // Spring에서 이 클래스를 Bean으로 등록하여 사용할 수 있도록 지정
+public class OwnerRoleInterceptor implements HandlerInterceptor {
 
     @Override
-    // 요청이 컨트롤러에 도달하기 전에 실행, 세션과 권한 검증
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
             throws UserException {
-        // 현재 HTTP 세션을 가져옵니다. 만약 세션이 존재하지 않으면 null을 반환
+        // 세션 불러오기
         HttpSession session = request.getSession(false);
-        // 세션 없을 경우 401 반환
+
+        // 세션이 없을 경우 401 에러
         if (session == null) {
             throw new UserException(ErrorCode.SESSION_INVALID);
         }
-        // 세션에서 authentication 가져옴
+        // 세션에서 가져온 정보를 가진 authentication 객체 생성
         Authentication authentication = (Authentication) session.getAttribute(SessionNames.USER_AUTH);
-        // 세션에서 role 정보 가져오기
+        // 객체의 role 가져옴
         Role role = authentication.getRole();
 
-        // 회원이 아니라면 user 권한 필요 하다는 메시지
-        if (role != Role.USER) {
+        // role이 owner가 아닐 경우 권한 401 에러 (인가)
+        if (role != Role.OWNER) {
             throw new UserException(ErrorCode.ROLE_MISMATCH);
         }
 
