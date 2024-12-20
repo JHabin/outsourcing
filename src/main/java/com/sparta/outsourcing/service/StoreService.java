@@ -4,7 +4,6 @@ import com.sparta.outsourcing.common.Authentication;
 import com.sparta.outsourcing.dto.store.*;
 import com.sparta.outsourcing.entity.Store;
 import com.sparta.outsourcing.entity.User;
-import com.sparta.outsourcing.exception.UnauthorizedException;
 import com.sparta.outsourcing.repository.StoreRepository;
 import com.sparta.outsourcing.repository.UserRepository;
 import com.sparta.outsourcing.repository.menu.MenuRepository;
@@ -12,9 +11,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -52,8 +51,8 @@ public class StoreService {
         Store findStore = storeRepository.findByIdOrElseThrow(storeId);
 
         // 로그인된 유저 아이디와 수정하려는 가게의 유저 아이디 일치 확인(본인 가게만 수정)
-        if(!user.getId().equals(findStore.getUser().getId())) {
-            throw new UnauthorizedException(HttpStatus.FORBIDDEN, "본인 가게만 수정이 가능합니다.");
+        if (!user.getId().equals(findStore.getUser().getId())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "본인 가게만 수정이 가능합니다.");
         }
 
         findStore.updateStore(name, openTime, closeTime, minOrderPrice);
@@ -91,24 +90,51 @@ public class StoreService {
 
         // storeName이 있을 경우 이름을 기준으로 매장을 조회한다.
         if (storeName != null && !storeName.isEmpty()) {
-            return storeRepository.findAllByStoreName(storeName);
+            List<Store> stores = storeRepository.findAll();
+
+            return stores.stream()
+                    .filter(store -> store.getName().contains(storeName))  // storeName을 포함하는 Store만 필터링
+                    .map(store -> new StoreResponseDto(
+                            store.getId(),
+                            store.getName(),
+                            store.getOpenTime(),
+                            store.getCloseTime(),
+                            store.getMinOrderPrice()
+                    ))
+                    .collect(Collectors.toList());
         }
+
+//        if (storeName != null && !storeName.isEmpty()) {
+//            return storeRepository.findAllByStoreName(storeName);
+//        }
+
 
         // storeName이 null 또는 빈문자열이면 전체 매장을 조회한다.
-        List<Store> stores = storeRepository.findAll();
-        List<StoreResponseDto> storeResponseDtoList = new ArrayList<>();
+//        List<Store> stores = storeRepository.findAll();
+//        List<StoreResponseDto> storeResponseDtoList = new ArrayList<>();
+//
+//        // TODO 팀원들과 코드 형식 맞추기
+//        for (Store store : stores) {
+//            StoreResponseDto dto = new StoreResponseDto(
+//                    store.getId(),
+//                    store.getName(),
+//                    store.getOpenTime(),
+//                    store.getCloseTime(),
+//                    store.getMinOrderPrice()
+//            );
+//            storeResponseDtoList.add(dto);
+//        }
 
-        // TODO 팀원들과 코드 형식 맞추기
-        for (Store store : stores) {
-            StoreResponseDto dto = new StoreResponseDto(
-                    store.getId(),
-                    store.getName(),
-                    store.getOpenTime(),
-                    store.getCloseTime(),
-                    store.getMinOrderPrice()
-            );
-            storeResponseDtoList.add(dto);
-        }
+        List<StoreResponseDto> storeResponseDtoList = storeRepository.findAll()
+                .stream()
+                .map(store -> new StoreResponseDto(
+                        store.getId(),
+                        store.getName(),
+                        store.getOpenTime(),
+                        store.getCloseTime(),
+                        store.getMinOrderPrice()))
+                .collect(Collectors.toList());
+
         return storeResponseDtoList;
     }
 
@@ -120,8 +146,8 @@ public class StoreService {
         Store findStore = storeRepository.findByIdOrElseThrow(storeId);
 
         // 삭제하려는 가게의 유저 아이디와 로그인된 유저 아이디가 일치하는 지 확인(본인 가게만 삭제 가능)
-        if(!user.getId().equals(findStore.getUser().getId())) {
-            throw new UnauthorizedException(HttpStatus.FORBIDDEN, "본인 가게만 삭제 가능합니다.");
+        if (!user.getId().equals(findStore.getUser().getId())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "본인 가게만 삭제 가능합니다.");
         }
 
         storeRepository.delete(findStore);
