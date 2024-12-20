@@ -15,7 +15,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 @RequiredArgsConstructor
 public class WebConfig implements WebMvcConfigurer {
-    private static final String[] AUTH_REQUIRED_PATH_PATTERNS = {"/users/login", "/users/logout", "/users/deactivate"};
+    private static final String[] AUTH_REQUIRED_PATH_PATTERNS = {"/users/logout", "/users/deactivate"};
     private static final String[] OWNER_ROLE_REQUIRED_PATH_PATTERNS = {"/users/owner/*"};
     private static final String[] USER_ROLE_REQUIRED_PATH_PATTERNS = {"/users/user/*"};
 

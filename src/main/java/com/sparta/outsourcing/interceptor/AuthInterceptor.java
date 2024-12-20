@@ -22,18 +22,8 @@ public class AuthInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
             throws UserException {
-        // 요청 URI 가져오기
-        String requestURI = request.getRequestURI();
-        HttpSession session;
 
-        // login을 수행할 경우 getSession(true)
-        if ("/users/login".equals(requestURI)) {
-            session = request.getSession(true); // 세션 생성
-
-            return true;
-        }
-        // 그 외에는 getSession(false)
-        session = request.getSession(false);
+        HttpSession session = request.getSession(false);
 
         // 세션이 없을 경우 401 에러
         if (session == null) {
