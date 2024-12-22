@@ -22,7 +22,6 @@ public class AuthInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
             throws UserException {
-
         HttpSession session = request.getSession(false);
 
         // 세션이 없을 경우 401 에러

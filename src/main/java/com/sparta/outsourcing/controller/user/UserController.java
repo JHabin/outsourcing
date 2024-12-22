@@ -1,6 +1,7 @@
 package com.sparta.outsourcing.controller.user;
 
 import com.sparta.outsourcing.common.Authentication;
+import com.sparta.outsourcing.common.Role;
 import com.sparta.outsourcing.constants.SessionNames;
 import com.sparta.outsourcing.dto.user.DeactivateRequestDto;
 import com.sparta.outsourcing.dto.user.LoginRequestDto;
@@ -40,16 +41,28 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     }
 
-    // 회원 중 user 인 사람의 프로필 조회
-    @GetMapping("/user/{id}")
-    public ResponseEntity<?> findUser(@PathVariable Long id) {
-        return ResponseEntity.status(HttpStatus.OK).body(userService.findUserById(id));
-    }
-
     // 회원 중 owner 인 사람의 프로필 조회
     @GetMapping("/owner/{id}")
-    public ResponseEntity<?> findOwner(@PathVariable Long id) {
-        return ResponseEntity.status(HttpStatus.OK).body(userService.findOwnerById(id));
+    public ResponseEntity<?> findOwner(@PathVariable Long id, HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        // 세션에서 가져온 정보를 가진 authentication 객체 생성
+        Authentication authentication = (Authentication) session.getAttribute(SessionNames.USER_AUTH);
+        // 객체의 role 가져옴
+        String authEmail = authentication.getEmail();
+
+        return ResponseEntity.status(HttpStatus.OK).body(userService.findOwnerById(id, authEmail));
+    }
+
+    // 회원 중 user 인 사람의 프로필 조회
+    @GetMapping("/user/{id}")
+    public ResponseEntity<?> findUser(@PathVariable Long id, HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        // 세션에서 가져온 정보를 가진 authentication 객체 생성
+        Authentication authentication = (Authentication) session.getAttribute(SessionNames.USER_AUTH);
+        // 객체의 role 가져옴
+        String authEmail = authentication.getEmail();
+
+        return ResponseEntity.status(HttpStatus.OK).body(userService.findUserById(id, authEmail));
     }
 
     @PostMapping("/login")
@@ -90,10 +103,16 @@ public class UserController {
                                                  HttpServletRequest request) {
         // 현재 세션을 가져옴. false - 세션이 존재하지 않을 경우 null을 반환, 세션 없으면 새로 생성 X
         HttpSession session = request.getSession(false);
+        // 세션에서 가져온 정보를 가진 authentication 객체 생성
+        Authentication authentication = (Authentication) session.getAttribute(SessionNames.USER_AUTH);
+        // 객체의 role 가져옴
+        String authEmail = authentication.getEmail();
+
+
         // 세션이 존재한다면, 현재 세션을 무효화함. -> 세션과 관련된 인증 정보 삭제됨
         if (session != null) {
+            userService.deleteUserByEmail(authEmail, deactivateRequestDto.getPassword());
             // 해당 id와 그 비밀번호를 가지고 사용자 delete 메서드 수행
-            userService.deleteUserByEmail(deactivateRequestDto.getEmail(), deactivateRequestDto.getPassword());
             session.invalidate();
         }
         if (session == null) {

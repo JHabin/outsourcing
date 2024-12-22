@@ -34,7 +34,6 @@ public class OwnerRoleInterceptor implements HandlerInterceptor {
         Authentication authentication = (Authentication) session.getAttribute(SessionNames.USER_AUTH);
         // 객체의 role 가져옴
         Role role = authentication.getRole();
-
         // role이 owner가 아닐 경우 권한 401 에러 (인가)
         if (role != Role.OWNER) {
             throw new UserException(ErrorCode.ROLE_MISMATCH);

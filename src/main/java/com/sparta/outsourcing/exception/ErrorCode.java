@@ -15,6 +15,7 @@ public enum ErrorCode {
     UNAUTHORIZED("로그인이 필요합니다.", HttpStatus.UNAUTHORIZED),
     SESSION_INVALID("세션이 없습니다.", HttpStatus.UNAUTHORIZED),
     ROLE_MISMATCH("권한이 일치하지 않습니다.", HttpStatus.UNAUTHORIZED),
+    AUTH_MISMATCH("본인이 일치하지 않습니다.", HttpStatus.UNAUTHORIZED),
     PASSWORD_INCORRECT("비밀번호가 일치하지 않습니다.", HttpStatus.BAD_REQUEST);
 
     private final String message;
