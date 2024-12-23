@@ -23,14 +23,6 @@ public class ReviewRequestDto {
   private final Long storeId;
 
   /*
-   * 리뷰를 작성할 주문의 고유 식별자
-   * - null 값을 허용하지 않음
-   * - 유효하지 않은 경우, "주문 아이디를 입력하세요."라는 메시지와 함께 예외가 발생
-   */
-  @NotNull(message = "주문 아이디를 입력하세요.")
-  private final Long orderId;
-
-  /*
    * 리뷰의 별점
    * - null 값을 허용하지 않음
    * - 최소값은 1, 최대값은 5로 설정
@@ -53,14 +45,14 @@ public class ReviewRequestDto {
 
   /**
    * ReviewRequestDto 객체를 생성합니다.
+   *
    * @param storeId 리뷰를 작성할 가게의 고유 식별자
-   * @param orderId 리뷰를 작성할 주문의 고유 식별자
+   *                //   * @param orderId 리뷰를 작성할 주문의 고유 식별자
    * @param rate    리뷰의 별점 (1~5 사이의 값)
    * @param content 리뷰의 내용 (10~200자)
    */
-  public ReviewRequestDto(Long storeId, Long orderId, Integer rate, String content) {
+  public ReviewRequestDto(Long storeId, Integer rate, String content) {
     this.storeId = storeId;
-    this.orderId = orderId;
     this.rate = rate;
     this.content = content;
   }

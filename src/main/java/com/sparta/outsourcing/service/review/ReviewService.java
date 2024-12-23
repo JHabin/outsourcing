@@ -1,7 +1,13 @@
 package com.sparta.outsourcing.service.review;
 
 import com.sparta.outsourcing.dto.review.ReviewResponseDto;
-import com.sparta.outsourcing.entity.Review;
+import com.sparta.outsourcing.entity.Order;
+import com.sparta.outsourcing.entity.Store;
+import com.sparta.outsourcing.exception.ErrorCode;
+import com.sparta.outsourcing.exception.ReviewException;
+import com.sparta.outsourcing.repository.order.OrderRepository;
+import com.sparta.outsourcing.repository.StoreRepository;
+import com.sparta.outsourcing.repository.menu.MenuRepository;
 import com.sparta.outsourcing.repository.review.ReviewRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,20 +24,33 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ReviewService {
   private final ReviewRepository reviewRepository;
+  private final StoreRepository storeRepository;
+  private final MenuRepository menuRepository;
+  private final OrderRepository orderRepository;
 
   /*
    * 리뷰를 생성하고 저장한 후, 저장된 리뷰 정보를 반환하기 위한 메서드
    */
   public ReviewResponseDto createReview(Long storeId, Long orderId, Integer rate, String content) {
-    Review saveReview = reviewRepository.save(new Review(rate, content));
-    return new ReviewResponseDto(
-        saveReview.getId(),
-        saveReview.getRate(),
-        saveReview.getContent(),
-        saveReview.getCreatedAt(),
-        saveReview.getStore().getId(),
-        saveReview.getOrder().getId(),
-        saveReview.getUser().getId());
+
+    // 주문 정보 가져오기
+    Order findOrder = orderRepository.findByIdOrElseThrow(orderId);
+
+    Store store = findOrder.getMenu().getStore();
+
+    // 주문이 해당 가게의 주문인지 확인
+    isOrderInStore(storeId, store.getId());
+
+//    Review saveReview = reviewRepository.save(new Review(rate,content,findOrder, user,store));
+//    return new ReviewResponseDto(
+//        saveReview.getId(),
+//        saveReview.getRate(),
+//        saveReview.getContent(),
+//        saveReview.getCreatedAt(),
+//        saveReview.getStore().getId(),
+//        saveReview.getOrder().getId(),
+//        saveReview.getUser().getId());
+    return null;
   }
 
   /*
@@ -43,5 +62,11 @@ public class ReviewService {
         .stream()
         .map(ReviewResponseDto::toDto)
         .toList();
+  }
+  //해당 메뉴가 가게에 있는 메뉴인지 검증 메서드 (임시)
+  private void isOrderInStore(Long storeId, Long orderStoreId) {
+    if (!storeId.equals(orderStoreId)) {
+      throw new ReviewException(ErrorCode.ORDER_MUST_BELONG_TO_STORE);
+    }
   }
 }

@@ -13,7 +13,7 @@ public class CreateOrderResponseDto {
     private final Long menuId;
     private final Integer count;
     private final Integer totalPrice;
-    private final String status;
+    private final Status status;
     private final String rejectReason;
     private final LocalDateTime createdAt;
     private final LocalDateTime modifiedAt;
@@ -23,7 +23,7 @@ public class CreateOrderResponseDto {
         this.menuId = savedOrder.getMenu().getId();
         this.count = savedOrder.getCount();
         this.totalPrice = savedOrder.getTotalPrice();
-        this.status = String.valueOf(savedOrder.getStatus());
+        this.status = savedOrder.getStatus();
         this.rejectReason = savedOrder.getRejectedReason();
         this.createdAt = savedOrder.getCreatedAt();
         this.modifiedAt = savedOrder.getModifiedAt();
@@ -34,7 +34,7 @@ public class CreateOrderResponseDto {
         this.menuId = menuId;
         this.count = count;
         this.totalPrice = totalPrice;
-        this.status = String.valueOf(status);
+        this.status = status;
         this.rejectReason = rejectedReason;
         this.createdAt = createdAt;
         this.modifiedAt = modifiedAt;

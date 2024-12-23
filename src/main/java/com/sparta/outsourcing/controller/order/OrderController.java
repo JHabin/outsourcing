@@ -1,13 +1,13 @@
-package com.sparta.outsourcing.controller;
+package com.sparta.outsourcing.controller.order;
 
 import com.sparta.outsourcing.dto.order.*;
-import com.sparta.outsourcing.service.OrderService;
+import com.sparta.outsourcing.service.order.OrderService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.util.List;
 
 @RestController //@Controller(HTML페이지를 반환하는 역할) + @ResponseBody(화면이 아닌 데이터를 전달할 때 사용) => JSON 형식의 데이터를 반환
 @RequestMapping("/orders")
@@ -26,10 +26,10 @@ public class OrderController {
      *         ResponseDto 응답하면 헤더나 상태코드는 설정할 수 없음
      */
     @PostMapping
-    public ResponseEntity<CreateOrderResponseDto> createOrder(@Valid @RequestBody CreateOrderRequestDto createOrderRequestDto) {
-        CreateOrderResponseDto createOrderResponseDto = orderService.createOrder(createOrderRequestDto);
-        //return new ResponseEntity<>(CreateOrderRequestDto, HttpStatus.CREATED); //컨벤션 맞추기
+    public ResponseEntity<CreateOrderResponseDto> createOrder(@Valid @RequestBody CreateOrderRequestDto createOrderRequestDto, HttpServletRequest httpServletRequest) {
+        CreateOrderResponseDto createOrderResponseDto = orderService.createOrder(createOrderRequestDto, httpServletRequest);
 
+        //return new ResponseEntity<>(CreateOrderRequestDto, HttpStatus.CREATED); //컨벤션 맞추기
         return ResponseEntity.status(HttpStatus.CREATED).body(createOrderResponseDto);
     }
 
@@ -38,12 +38,13 @@ public class OrderController {
      * request(필수): status
      * 200(정상), 401(권한없음-OWNER만 가능), 404(주문데이터 없음)
      * @param id 주문번호
-     * @param status 주문상태
+     * @param ModifyOrderStatusRequestDto 주문상태
      * @return ModifyOrderStatusResponseDto
      */
     @PatchMapping("/{id}")
-    public ResponseEntity<ModifyOrderStatusResponseDto> updateOrderStatus(@PathVariable Long id, @RequestBody String status) {
-        return ResponseEntity.ok().body(orderService.updateOrderStatus(id, status));
+    public ResponseEntity<ModifyOrderStatusResponseDto> updateOrderStatus(@PathVariable Long id, @RequestBody ModifyOrderStatusRequestDto modifyOrderStatusRequestDto) { //String -> Dto 수정하기!**
+        //@RequestBody + 객채 동작하기 위해서 생성자가 필수
+        return ResponseEntity.ok().body(orderService.updateOrderStatus(id, modifyOrderStatusRequestDto.getStatus()));
     }
 
     /**
@@ -51,12 +52,12 @@ public class OrderController {
      * request(필수): rejectReason
      * 200(정상), 401(권한없음-OWNER만 가능), 404(주문데이터 없음)
      * @param id 주문번호
-     * @param rejectReason 거절사유
+     * @param RejectOrderRequestDto 거절사유
      * @return RejectOrderResponseDto
      */
     @PatchMapping("/{id}/reject")
-    public ResponseEntity<RejectOrderResponseDto> rejectOrderStatus(@PathVariable Long id, @RequestBody String rejectReason) {
-        return ResponseEntity.ok().body(orderService.rejectOrderStatus(id, rejectReason));
+    public ResponseEntity<RejectOrderResponseDto> rejectOrderStatus(@PathVariable Long id, @RequestBody RejectOrderRequestDto rejectOrderRequestDto) {
+        return ResponseEntity.ok().body(orderService.rejectOrderStatus(id, rejectOrderRequestDto.getRejectReason()));
     }
 
     /**
@@ -69,15 +70,15 @@ public class OrderController {
         return ResponseEntity.ok().body(orderService.findById(id));
     }
 
-    /**
-     * 주문 (다건) 조회 API (GET)
-     * 유저 기준 주문내역 조회
-     * @param (email) 사용자 고유식별자
-     *        RequestParam: /storeId=?
-     * @return List<OrderResponseDto>
-     */
-    @GetMapping
-    public ResponseEntity<List<OrderResponseDto>> getAllOrder() {
-        return ResponseEntity.ok().body(orderService.findAll());
-    }
+//    /**
+//     * 주문 (다건) 조회 API (GET)
+//     * 유저 기준 주문내역 조회
+//     * @param (email) 사용자 고유식별자
+//     *        RequestParam: /storeId=?
+//     * @return List<OrderResponseDto>
+//     */
+//    @GetMapping
+//    public ResponseEntity<List<OrderResponseDto>> getAllOrder() {
+//        return ResponseEntity.ok().body(orderService.findAll());
+//    }
 }

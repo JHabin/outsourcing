@@ -31,18 +31,22 @@ public class ReviewController {
   /**
    * 리뷰 생성 Controller
    * 리뷰 생성 요청을 처리
+   *
    * @param requestDto 클라이언트로부터 전달받은 리뷰 생성 요청 데이터를 담은 DTO
    * @return 생성된 리뷰 데이터를 포함한 응답 객체와 HTTP 상태코드 201(CREATED)
    */
-  @PostMapping("/reviews")
-  public ResponseEntity<ReviewResponseDto> createReview(@Valid @RequestBody ReviewRequestDto requestDto) {
-    ReviewResponseDto reviewResponseDto = reviewService.createReview(requestDto.getStoreId(), requestDto.getOrderId(), requestDto.getRate(), requestDto.getContent());
+  @PostMapping("/order/{orderId}/reviews")
+  public ResponseEntity<ReviewResponseDto> createReview(
+      @PathVariable Long orderId,
+      @Valid @RequestBody ReviewRequestDto requestDto) {
+    ReviewResponseDto reviewResponseDto = reviewService.createReview(requestDto.getStoreId(), orderId, requestDto.getRate(), requestDto.getContent());
     return new ResponseEntity<>(reviewResponseDto, HttpStatus.CREATED);
   }
 
   /**
    * 리뷰 전체 조회 Controller
    * 모든 리뷰 데이터를 조회
+   *
    * @return 조회된 리뷰 데이터 리스트와 HTTP 상태코드 200(OK)
    */
   @GetMapping("/stores/{storeId}/reviews")
