@@ -82,6 +82,7 @@ public class UserService {
         if (!passwordEncoder.matches(loginRequestDto.getPassword(), findUser.getPassword())) {
             throw new UserException(ErrorCode.PASSWORD_INCORRECT);
         }
+
         // 로그인 성공 시, 해당 회원의 이메일과 권한 정보를 가진 authentication 반환
         return new Authentication(
                 findUser.getEmail(),
@@ -96,9 +97,13 @@ public class UserService {
      * @param userId
      * @return user responseDto
      */
-    public Object findUserById(Long userId) {
+    public Object findUserById(Long userId, String email) {
+
         // user id 조회
         User user = userRepository.findByIdOrElseThrow(userId);
+        if (!user.getEmail().equals(email)) {
+            throw new UserException(ErrorCode.AUTH_MISMATCH);
+        }
 
         // UserResponseDto 형태 반환
         return new UserResponseDto(user);
@@ -109,10 +114,13 @@ public class UserService {
      * @param ownerId
      * @return owner responseDto
      */
-    public Object findOwnerById(Long ownerId) {
+    public Object findOwnerById(Long ownerId, String email) {
+
         // user id 조회
         User owner = userRepository.findByIdOrElseThrow(ownerId);
-
+        if (!owner.getEmail().equals(email)) {
+            throw new UserException(ErrorCode.AUTH_MISMATCH);
+        }
         // 점주가 가진 가게 수 계산
         Long storeCount = storeRepository.countStoresById(owner.getId());
         // 점주의 Id와 일치하는 가게를 모두 가져와 가게 리스트에 저장

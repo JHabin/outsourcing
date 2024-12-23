@@ -35,6 +35,7 @@ public class UserRoleInterceptor implements HandlerInterceptor {
         Authentication authentication = (Authentication) session.getAttribute(SessionNames.USER_AUTH);
         // 세션에서 role 정보 가져오기
         Role role = authentication.getRole();
+        System.out.println("user 권한 : "+role);
 
         // 회원이 아니라면 user 권한 필요 하다는 메시지
         if (role != Role.USER) {
