@@ -50,7 +50,7 @@ public class Menu extends BaseEntity {
    * Many-to-One 관계로 매핑되며, 외래 키는 `store_id` 컬럼에 저장
    * null 값을 허용하지 않는다
    */
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "store_id", nullable = false)
   private Store store;
 

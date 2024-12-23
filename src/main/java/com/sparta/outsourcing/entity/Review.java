@@ -55,7 +55,7 @@ public class Review extends BaseEntity {
      * Many-to-One 관계로 매핑되며, 외래 키는 `order_id`로 저장
      * null 값을 허용하지 않음
      */
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id", nullable = false)
     private Order order;
 
@@ -64,7 +64,7 @@ public class Review extends BaseEntity {
      * Many-to-One 관계로 매핑되며, 외래 키는 `user_id`로 저장
      * null 값을 허용하지 않음
      */
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
@@ -73,7 +73,7 @@ public class Review extends BaseEntity {
      * Many-to-One 관계로 매핑되며, 외래 키는 `store_id`로 저장
      * null 값을 허용하지 않음
      */
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "store_id", nullable = false)
     private Store store;
 
