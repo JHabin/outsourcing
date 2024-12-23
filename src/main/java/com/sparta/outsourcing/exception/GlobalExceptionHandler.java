@@ -14,6 +14,10 @@ public class GlobalExceptionHandler {
                 .status(e.getErrorCode().getHttpStatus())  // HTTP 상태 코드
                 .body(e.getErrorCode().getMessage());     // 예외 메시지
     }
-
-
+    @ExceptionHandler(MenuException.class)
+    public ResponseEntity<?> handleMenuException(MenuException e){
+        return ResponseEntity
+            .status(e.getErrorCode().getHttpStatus())  // HTTP 상태 코드
+            .body(e.getErrorCode().getMessage());     // 예외 메시지
+    }
 }
