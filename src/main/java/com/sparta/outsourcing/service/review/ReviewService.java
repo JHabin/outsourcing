@@ -1,11 +1,9 @@
 package com.sparta.outsourcing.service.review;
 
 import com.sparta.outsourcing.dto.review.ReviewResponseDto;
-import com.sparta.outsourcing.entity.Menu;
 import com.sparta.outsourcing.entity.Order;
-import com.sparta.outsourcing.entity.Review;
 import com.sparta.outsourcing.entity.Store;
-import com.sparta.outsourcing.repository.OrderRepository;
+import com.sparta.outsourcing.repository.order.OrderRepository;
 import com.sparta.outsourcing.repository.StoreRepository;
 import com.sparta.outsourcing.repository.menu.MenuRepository;
 import com.sparta.outsourcing.repository.review.ReviewRepository;

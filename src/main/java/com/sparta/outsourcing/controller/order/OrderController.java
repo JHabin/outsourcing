@@ -1,15 +1,13 @@
-package com.sparta.outsourcing.controller;
+package com.sparta.outsourcing.controller.order;
 
-import com.sparta.outsourcing.common.Status;
 import com.sparta.outsourcing.dto.order.*;
-import com.sparta.outsourcing.service.OrderService;
+import com.sparta.outsourcing.service.order.OrderService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.util.List;
 
 @RestController //@Controller(HTML페이지를 반환하는 역할) + @ResponseBody(화면이 아닌 데이터를 전달할 때 사용) => JSON 형식의 데이터를 반환
 @RequestMapping("/orders")

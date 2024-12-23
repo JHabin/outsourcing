@@ -1,18 +1,16 @@
-package com.sparta.outsourcing.service;
+package com.sparta.outsourcing.service.order;
 
 import com.sparta.outsourcing.common.Authentication;
-import com.sparta.outsourcing.common.Role;
 import com.sparta.outsourcing.common.Status;
 import com.sparta.outsourcing.constants.SessionNames;
 import com.sparta.outsourcing.dto.order.*;
 import com.sparta.outsourcing.entity.Menu;
 import com.sparta.outsourcing.entity.Order;
 import com.sparta.outsourcing.entity.User;
-import com.sparta.outsourcing.exception.BadValueException;
 import com.sparta.outsourcing.exception.ErrorCode;
-import com.sparta.outsourcing.exception.WrongAccessException;
-import com.sparta.outsourcing.repository.OrderRepository;
+import com.sparta.outsourcing.exception.OrderException;
 import com.sparta.outsourcing.repository.user.UserRepository;
+import com.sparta.outsourcing.repository.order.OrderRepository;
 import com.sparta.outsourcing.repository.menu.MenuRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
@@ -20,7 +18,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalTime;
-import java.util.List;
 
 /**
  * Service Class
@@ -48,7 +45,7 @@ public class OrderService {
         LocalTime storeCloseTime = menu.getStore().getCloseTime(); //가게 마감시간
 
         if (nowLocalTime.isBefore(storeOpenTime) || nowLocalTime.isAfter(storeCloseTime)) {
-            throw new WrongAccessException(ErrorCode.NOT_OPEN_STORE);
+            throw new OrderException(ErrorCode.NOT_OPEN_STORE);
         }
 
         //주문금액 계산 및 최소주문금액 충족하지 못할 시 예외처리
@@ -56,7 +53,7 @@ public class OrderService {
         Integer minOrderPrice = menu.getStore().getMinOrderPrice(); //가게의 최소주문금액
 
         if (totalPrice < minOrderPrice) {
-            throw new BadValueException(ErrorCode.LESS_THAN_MINPRICE);
+            throw new OrderException(ErrorCode.LESS_THAN_MINPRICE);
         }
 
         //이상 없을 시, 주문 등록 처리
