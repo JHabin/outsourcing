@@ -18,7 +18,10 @@ public enum ErrorCode {
     AUTH_MISMATCH("본인이 일치하지 않습니다.", HttpStatus.UNAUTHORIZED),
     PASSWORD_INCORRECT("비밀번호가 일치하지 않습니다.", HttpStatus.BAD_REQUEST),
     NOT_OPEN_STORE("영업 시간이 아닙니다.",HttpStatus.BAD_REQUEST),
-    LESS_THAN_MINPRICE("최소주문금액 이상만 주문 가능합니다.", HttpStatus.BAD_REQUEST);
+    LESS_THAN_MINPRICE("최소주문금액 이상만 주문 가능합니다.", HttpStatus.BAD_REQUEST),
+    NOT_IN_STORE("해당 메뉴는 지정된 가게에 속하지 않습니다. ", HttpStatus.BAD_REQUEST),
+    NOT_FOUND_MENU("해당 메뉴를 조회할 수 없습니다.", HttpStatus.NOT_FOUND),
+    ORDER_MUST_BELONG_TO_STORE("해당 가게의 주문에만 리뷰를 작성할 수 있습니다.",HttpStatus.BAD_REQUEST);
 
     private final String message;
     private final HttpStatus httpStatus;
