@@ -5,7 +5,7 @@ import com.sparta.outsourcing.dto.user.LoginRequestDto;
 import com.sparta.outsourcing.dto.user.OwnerResponseDto;
 import com.sparta.outsourcing.dto.user.UserResponseDto;
 import com.sparta.outsourcing.entity.Store;
-import com.sparta.outsourcing.repository.StoreRepository;
+import com.sparta.outsourcing.repository.store.StoreRepository;
 import com.sparta.outsourcing.entity.User;
 
 import com.sparta.outsourcing.common.Authentication;

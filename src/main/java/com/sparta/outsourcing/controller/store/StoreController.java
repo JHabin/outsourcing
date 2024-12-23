@@ -1,9 +1,9 @@
-package com.sparta.outsourcing.controller;
+package com.sparta.outsourcing.controller.store;
 
 import com.sparta.outsourcing.common.Authentication;
 import com.sparta.outsourcing.constants.SessionNames;
 import com.sparta.outsourcing.dto.store.*;
-import com.sparta.outsourcing.service.StoreService;
+import com.sparta.outsourcing.service.store.StoreService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -37,7 +37,7 @@ public class StoreController {
 
         // 세션에 저장되어있는 Authentication 객체를 가져온다.
         HttpSession session = httpServletRequest.getSession();
-        Authentication authentication = (Authentication)session.getAttribute(SessionNames.USER_AUTH);
+        Authentication authentication = (Authentication) session.getAttribute(SessionNames.USER_AUTH);
 
         // 새로운 매장을 생성하고 그 결과를 CreateStoreResponseDto 객체에 저장한다.
         CreateStoreResponseDto createStoreResponseDto = storeService.createStore(
@@ -66,7 +66,7 @@ public class StoreController {
     ) {
 
         HttpSession session = httpServletRequest.getSession();
-        Authentication authentication = (Authentication)session.getAttribute(SessionNames.USER_AUTH);
+        Authentication authentication = (Authentication) session.getAttribute(SessionNames.USER_AUTH);
 
         UpdateStoreResponseDto updatedStore = storeService.updateStore(
                 authentication,
@@ -81,11 +81,11 @@ public class StoreController {
     /**
      * 가게 단건 조회 API
      *
-     * // @param storeId 조회 하려는 가게의 id
+     * @param storeId 조회 하려는 가게의 id
      * @return 특정 가게의 정보를 담고 있는 dto. 성공시 상태코드 200 반환
      */
     @GetMapping("/{storeId}")
-    public ResponseEntity<StoreMenuResponseDto> findStoreById(@PathVariable Long storeId){
+    public ResponseEntity<StoreMenuResponseDto> findStoreById(@PathVariable Long storeId) {
         StoreMenuResponseDto storeMenuResponseDto = storeService.findStoreById(storeId);
         return new ResponseEntity<>(storeMenuResponseDto, HttpStatus.OK);
     }
@@ -111,7 +111,7 @@ public class StoreController {
     @DeleteMapping("/{storeId}")
     public ResponseEntity<Void> deleteStore(@PathVariable Long storeId, HttpServletRequest httpServletRequest) {
         HttpSession session = httpServletRequest.getSession();
-        Authentication authentication = (Authentication)session.getAttribute(SessionNames.USER_AUTH);
+        Authentication authentication = (Authentication) session.getAttribute(SessionNames.USER_AUTH);
         storeService.deleteStore(authentication, storeId);
         return new ResponseEntity<>(HttpStatus.OK);
     }

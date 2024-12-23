@@ -1,4 +1,4 @@
-package com.sparta.outsourcing.repository;
+package com.sparta.outsourcing.repository.store;
 
 import com.sparta.outsourcing.entity.Store;
 import org.springframework.data.jpa.repository.JpaRepository;

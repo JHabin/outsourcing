@@ -1,17 +1,19 @@
-package com.sparta.outsourcing.service;
+package com.sparta.outsourcing.service.store;
 
 import com.sparta.outsourcing.common.Authentication;
+import com.sparta.outsourcing.common.Role;
 import com.sparta.outsourcing.dto.store.*;
 import com.sparta.outsourcing.entity.Store;
 import com.sparta.outsourcing.entity.User;
-import com.sparta.outsourcing.repository.StoreRepository;
+import com.sparta.outsourcing.exception.ErrorCode;
+import com.sparta.outsourcing.exception.StoreException;
+import com.sparta.outsourcing.exception.UserException;
+import com.sparta.outsourcing.repository.store.StoreRepository;
 import com.sparta.outsourcing.repository.user.UserRepository;
 import com.sparta.outsourcing.repository.menu.MenuRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalTime;
 import java.util.List;
@@ -29,6 +31,11 @@ public class StoreService {
 
         String email = authentication.getEmail();
         User user = userRepository.findByEmailOrElseThrow(email);
+        // 로그인한 유저가 ONWER 권한인지 확인(OWNER만 가게 생성 가능)
+        if (!user.getRole().equals(Role.OWNER)) {
+//            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "가게 생성 권한이 없습니다.");
+            throw new StoreException(ErrorCode.FORBIDDEN_STORE_CREATE);
+        }
         Store store = new Store(name, openTime, closeTime, minOrderPrice, user);
         storeRepository.save(store);
 
@@ -52,7 +59,8 @@ public class StoreService {
 
         // 로그인된 유저 아이디와 수정하려는 가게의 유저 아이디 일치 확인(본인 가게만 수정)
         if (!user.getId().equals(findStore.getUser().getId())) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "본인 가게만 수정이 가능합니다.");
+//            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "본인 가게만 수정이 가능합니다.");
+            throw new StoreException(ErrorCode.FORBIDDEN_STORE_UPDATE);
         }
 
         findStore.updateStore(name, openTime, closeTime, minOrderPrice);
@@ -71,6 +79,10 @@ public class StoreService {
     // 가게 단건 조회 로직
     public StoreMenuResponseDto findStoreById(Long storeId) {
         Store findStore = storeRepository.findByIdOrElseThrow(storeId);
+        if (findStore.isDeleted()) {
+//            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "이미 삭제된 가게입니다.");
+            throw new UserException(ErrorCode.DEACTIVATED_STORE);
+        }
         List<MenuDto> menuDtoList = menuRepository.findByStoreId(storeId)
                 .stream()
                 .map(menu -> new MenuDto(menu.getName(), menu.getPrice()))
@@ -145,11 +157,18 @@ public class StoreService {
         User user = userRepository.findByEmailOrElseThrow(email);
         Store findStore = storeRepository.findByIdOrElseThrow(storeId);
 
-        // 삭제하려는 가게의 유저 아이디와 로그인된 유저 아이디가 일치하는 지 확인(본인 가게만 삭제 가능)
-        if (!user.getId().equals(findStore.getUser().getId())) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "본인 가게만 삭제 가능합니다.");
+        // 가게가 이미 삭제된 상태인지 확인
+        if (findStore.isDeleted()) {
+//            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "이미 삭제된 가게입니다.");
+            throw new StoreException(ErrorCode.DEACTIVATED_STORE);
         }
 
-        storeRepository.delete(findStore);
+        // 삭제하려는 가게의 유저 아이디와 로그인된 유저 아이디가 일치하는 지 확인(본인 가게만 삭제 가능)
+        if (!user.getId().equals(findStore.getUser().getId())) {
+//            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "본인 가게만 삭제 가능합니다.");
+            throw new StoreException(ErrorCode.FORBIDDEN_STORE_DELETE);
+        }
+
+        findStore.softDelete();
     }
 }
