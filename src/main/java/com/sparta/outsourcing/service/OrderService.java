@@ -12,7 +12,7 @@ import com.sparta.outsourcing.exception.BadValueException;
 import com.sparta.outsourcing.exception.ErrorCode;
 import com.sparta.outsourcing.exception.WrongAccessException;
 import com.sparta.outsourcing.repository.OrderRepository;
-import com.sparta.outsourcing.repository.UserRepository;
+import com.sparta.outsourcing.repository.user.UserRepository;
 import com.sparta.outsourcing.repository.menu.MenuRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
