@@ -15,7 +15,13 @@ public enum ErrorCode {
     UNAUTHORIZED("로그인이 필요합니다.", HttpStatus.UNAUTHORIZED),
     SESSION_INVALID("세션이 없습니다.", HttpStatus.UNAUTHORIZED),
     ROLE_MISMATCH("권한이 일치하지 않습니다.", HttpStatus.UNAUTHORIZED),
-    PASSWORD_INCORRECT("비밀번호가 일치하지 않습니다.", HttpStatus.BAD_REQUEST);
+    PASSWORD_INCORRECT("비밀번호가 일치하지 않습니다.", HttpStatus.BAD_REQUEST),
+
+    // Store 예외 코드(추가 가능?)
+    DEACTIVATED_STORE("이미 삭제된 가게입니다.", HttpStatus.NOT_FOUND),
+    FORBIDDEN_STORE_CREATE("가게 생성 권한이 없습니다.", HttpStatus.FORBIDDEN),
+    FORBIDDEN_STORE_UPDATE("본인 가게만 수정 가능합니다.", HttpStatus.FORBIDDEN),
+    FORBIDDEN_STORE_DELETE("본인 가게만 삭제 가능합니다.", HttpStatus.FORBIDDEN);
 
     private final String message;
     private final HttpStatus httpStatus;
