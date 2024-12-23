@@ -3,6 +3,8 @@ package com.sparta.outsourcing.service.review;
 import com.sparta.outsourcing.dto.review.ReviewResponseDto;
 import com.sparta.outsourcing.entity.Order;
 import com.sparta.outsourcing.entity.Store;
+import com.sparta.outsourcing.exception.ErrorCode;
+import com.sparta.outsourcing.exception.ReviewException;
 import com.sparta.outsourcing.repository.order.OrderRepository;
 import com.sparta.outsourcing.repository.StoreRepository;
 import com.sparta.outsourcing.repository.menu.MenuRepository;
@@ -37,7 +39,7 @@ public class ReviewService {
     Store store = findOrder.getMenu().getStore();
 
     // 주문이 해당 가게의 주문인지 확인
-    isMenuInStore(storeId, store.getId());
+    isOrderInStore(storeId, store.getId());
 
 //    Review saveReview = reviewRepository.save(new Review(rate,content,findOrder, user,store));
 //    return new ReviewResponseDto(
@@ -62,9 +64,9 @@ public class ReviewService {
         .toList();
   }
   //해당 메뉴가 가게에 있는 메뉴인지 검증 메서드 (임시)
-  private void isMenuInStore(Long storeId, Long menuStoreId) {
-    if (!storeId.equals(menuStoreId)) {
-      throw new IllegalArgumentException("해당 가게의 주문에만 리뷰를 작성할 수 있습니다.");
+  private void isOrderInStore(Long storeId, Long orderStoreId) {
+    if (!storeId.equals(orderStoreId)) {
+      throw new ReviewException(ErrorCode.ORDER_MUST_BELONG_TO_STORE);
     }
   }
 }

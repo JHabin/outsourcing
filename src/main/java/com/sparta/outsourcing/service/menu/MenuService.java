@@ -5,6 +5,8 @@ import com.sparta.outsourcing.dto.menu.ModifyMenuResponseDto;
 import com.sparta.outsourcing.dto.menu.ResponseDto;
 import com.sparta.outsourcing.entity.Menu;
 import com.sparta.outsourcing.entity.Store;
+import com.sparta.outsourcing.exception.ErrorCode;
+import com.sparta.outsourcing.exception.MenuException;
 import com.sparta.outsourcing.repository.StoreRepository;
 import com.sparta.outsourcing.repository.menu.MenuRepository;
 import jakarta.transaction.Transactional;
@@ -78,7 +80,7 @@ public class MenuService {
    */
   private void isMenuInStore(Long storeId, Long menuStoreId) {
     if (!storeId.equals(menuStoreId)) {
-      throw new IllegalArgumentException("해당 메뉴는 지정된 가게에 속하지 않습니다. ");
+      throw new MenuException(ErrorCode.NOT_IN_STORE);
     }
   }
 
