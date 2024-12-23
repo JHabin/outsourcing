@@ -54,13 +54,13 @@ public class StoreController {
     /**
      * 가게 수정 API
      *
-     * @param storeId               수정하려는 가게의 id
+     * @param id               수정하려는 가게의 id
      * @param updateStoreRequestDto 수정할 가게의 정보를 담고있는 dto
      * @return 수정된 가게의 정보를 담고 있는 dto. 성공시 상태코드 200 반환
      */
-    @PatchMapping("/{storeId}")
+    @PatchMapping("/{id}")
     public ResponseEntity<UpdateStoreResponseDto> updateStore(
-            @PathVariable Long storeId,
+            @PathVariable Long id,
             @Valid @RequestBody UpdateStoreRequestDto updateStoreRequestDto,
             HttpServletRequest httpServletRequest
     ) {
@@ -70,7 +70,7 @@ public class StoreController {
 
         UpdateStoreResponseDto updatedStore = storeService.updateStore(
                 authentication,
-                storeId,
+                id,
                 updateStoreRequestDto.getName(),
                 updateStoreRequestDto.getOpenTime(),
                 updateStoreRequestDto.getCloseTime(),
@@ -81,12 +81,12 @@ public class StoreController {
     /**
      * 가게 단건 조회 API
      *
-     * @param storeId 조회 하려는 가게의 id
+     * @param id 조회 하려는 가게의 id
      * @return 특정 가게의 정보를 담고 있는 dto. 성공시 상태코드 200 반환
      */
-    @GetMapping("/{storeId}")
-    public ResponseEntity<StoreMenuResponseDto> findStoreById(@PathVariable Long storeId) {
-        StoreMenuResponseDto storeMenuResponseDto = storeService.findStoreById(storeId);
+    @GetMapping("/{id}")
+    public ResponseEntity<StoreMenuResponseDto> findStoreById(@PathVariable Long id) {
+        StoreMenuResponseDto storeMenuResponseDto = storeService.findStoreById(id);
         return new ResponseEntity<>(storeMenuResponseDto, HttpStatus.OK);
     }
 
@@ -105,14 +105,14 @@ public class StoreController {
     /**
      * 가게 삭제 API
      *
-     * @param storeId 삭제할 가게의 id
+     * @param id 삭제할 가게의 id
      * @return 삭제 성공 시 상태코드 200 반환.
      */
-    @DeleteMapping("/{storeId}")
-    public ResponseEntity<Void> deleteStore(@PathVariable Long storeId, HttpServletRequest httpServletRequest) {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteStore(@PathVariable Long id, HttpServletRequest httpServletRequest) {
         HttpSession session = httpServletRequest.getSession();
         Authentication authentication = (Authentication) session.getAttribute(SessionNames.USER_AUTH);
-        storeService.deleteStore(authentication, storeId);
+        storeService.deleteStore(authentication, id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

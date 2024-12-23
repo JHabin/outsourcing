@@ -34,6 +34,12 @@ public class OwnerRoleInterceptor implements HandlerInterceptor {
         if (method.equals(HttpMethod.GET.toString()) && requestURI.matches("/menus/\\d+")) { //정규표현식:orders+숫자를 의미
             return true;
         }
+        if (method.equals(HttpMethod.GET.toString()) && requestURI.matches("/stores/\\d+")) {
+            return true;
+        }
+        if (method.equals(HttpMethod.GET.toString()) && requestURI.matches("/stores")) {
+            return true;
+        }
 
         // 세션 불러오기
         HttpSession session = request.getSession(false);

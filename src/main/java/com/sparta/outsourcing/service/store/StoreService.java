@@ -52,10 +52,10 @@ public class StoreService {
 
     // @Transactional -> 하나의 작업이라도 실패하면 모든 작업을 롤백하여 데이터 일관성을 유지한다.
     @Transactional
-    public UpdateStoreResponseDto updateStore(Authentication authentication, Long storeId, String name, LocalTime openTime, LocalTime closeTime, Integer minOrderPrice) {
+    public UpdateStoreResponseDto updateStore(Authentication authentication, Long id, String name, LocalTime openTime, LocalTime closeTime, Integer minOrderPrice) {
         String email = authentication.getEmail();
         User user = userRepository.findByEmailOrElseThrow(email);
-        Store findStore = storeRepository.findByIdOrElseThrow(storeId);
+        Store findStore = storeRepository.findByIdOrElseThrow(id);
 
         // 로그인된 유저 아이디와 수정하려는 가게의 유저 아이디 일치 확인(본인 가게만 수정)
         if (!user.getId().equals(findStore.getUser().getId())) {
@@ -77,13 +77,13 @@ public class StoreService {
     }
 
     // 가게 단건 조회 로직
-    public StoreMenuResponseDto findStoreById(Long storeId) {
-        Store findStore = storeRepository.findByIdOrElseThrow(storeId);
+    public StoreMenuResponseDto findStoreById(Long id) {
+        Store findStore = storeRepository.findByIdOrElseThrow(id);
         if (findStore.isDeleted()) {
 //            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "이미 삭제된 가게입니다.");
             throw new UserException(ErrorCode.DEACTIVATED_STORE);
         }
-        List<MenuDto> menuDtoList = menuRepository.findByStoreId(storeId)
+        List<MenuDto> menuDtoList = menuRepository.findByStoreId(id)
                 .stream()
                 .map(menu -> new MenuDto(menu.getName(), menu.getPrice()))
                 .collect(Collectors.toList());
@@ -152,10 +152,10 @@ public class StoreService {
 
     // TODO 권한 확인 로직 추가
     @Transactional
-    public void deleteStore(Authentication authentication, Long storeId) {
+    public void deleteStore(Authentication authentication, Long id) {
         String email = authentication.getEmail();
         User user = userRepository.findByEmailOrElseThrow(email);
-        Store findStore = storeRepository.findByIdOrElseThrow(storeId);
+        Store findStore = storeRepository.findByIdOrElseThrow(id);
 
         // 가게가 이미 삭제된 상태인지 확인
         if (findStore.isDeleted()) {
