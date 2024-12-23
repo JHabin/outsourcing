@@ -31,11 +31,6 @@ public class StoreService {
 
         String email = authentication.getEmail();
         User user = userRepository.findByEmailOrElseThrow(email);
-        // 로그인한 유저가 ONWER 권한인지 확인(OWNER만 가게 생성 가능)
-        if (!user.getRole().equals(Role.OWNER)) {
-//            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "가게 생성 권한이 없습니다.");
-            throw new StoreException(ErrorCode.FORBIDDEN_STORE_CREATE);
-        }
         Store store = new Store(name, openTime, closeTime, minOrderPrice, user);
         storeRepository.save(store);
 
