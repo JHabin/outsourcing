@@ -42,27 +42,21 @@ public class UserController {
     }
 
     // 회원 중 owner 인 사람의 프로필 조회
-    @GetMapping("/owner/{id}")
-    public ResponseEntity<?> findOwner(@PathVariable Long id, HttpServletRequest request) {
+    @GetMapping("/{id}")
+    public ResponseEntity<?> findProfileByRole(@RequestParam String role, @PathVariable Long id, HttpServletRequest request) {
         HttpSession session = request.getSession(false);
         // 세션에서 가져온 정보를 가진 authentication 객체 생성
         Authentication authentication = (Authentication) session.getAttribute(SessionNames.USER_AUTH);
         // 객체의 role 가져옴
         String authEmail = authentication.getEmail();
 
-        return ResponseEntity.status(HttpStatus.OK).body(userService.findOwnerById(id, authEmail));
-    }
+        if (Role.OWNER.getName().equals(role)) {
+            return ResponseEntity.status(HttpStatus.OK).body(userService.findOwnerById(id, authEmail));
+        }
+        else {
+            return ResponseEntity.status(HttpStatus.OK).body(userService.findUserById(id, authEmail));
+        }
 
-    // 회원 중 user 인 사람의 프로필 조회
-    @GetMapping("/user/{id}")
-    public ResponseEntity<?> findUser(@PathVariable Long id, HttpServletRequest request) {
-        HttpSession session = request.getSession(false);
-        // 세션에서 가져온 정보를 가진 authentication 객체 생성
-        Authentication authentication = (Authentication) session.getAttribute(SessionNames.USER_AUTH);
-        // 객체의 role 가져옴
-        String authEmail = authentication.getEmail();
-
-        return ResponseEntity.status(HttpStatus.OK).body(userService.findUserById(id, authEmail));
     }
 
     @PostMapping("/login")
